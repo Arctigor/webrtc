@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @file
- *   Kontroller fuggvenyeket meghatarozo osztaly.
- */
-
-/**
- * Tartalmazza a kontroller fuggvenyeket.
- */
 class Controller {
 
   public $path;
@@ -36,9 +28,27 @@ class Controller {
   }
   
   public function formLogin() {
-  	return array(
-  			'new' => 'lol',
-  			'data' => 'FORM LGOIN',
-  	);
+  	$connection = Database::connect();
+ 	if ($connection->connect_error) {
+   	 die("Connection failed: " . $conn->connect_error);
+	}
+	$userSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "'";
+	$userResult = $connection->query($userSql);
+	$user = $userResult->fetch_object();
+	if($user){
+		$loginSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "' AND " . "password='".$_POST['password']."'";
+		$loginResult = $connection->query($loginSql);
+		if($user){
+			$_SESSION['username'] = $_POST['username'];
+			header("Location: /welcome");
+		} else {
+			print_r("wrong username or password");
+		}
+	} else {
+			print_r("wrong username or password");
+	}
+  }
+  
+  public function welcome() {
   }
 }

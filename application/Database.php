@@ -12,7 +12,7 @@
 
 class Database {
 
-  public function connect() {
+  public static function connect() {
     $mysqli = mysqli_connect("localhost", "root", "", "webrtc");
 
     return $mysqli;
