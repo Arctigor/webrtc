@@ -87,9 +87,9 @@ class App {
 		$currentRoute = $this->routes[$this->path];
 		if (isset($currentRoute['js'])) {
 			foreach ($currentRoute['js'] as $js) {
-				$output .= '<script type="text/javascript" src="';
-				$output .= $js;
-				$output .= '"></script>';
+					$output .= '<script type="text/javascript" src="';
+					$output .= $js;
+					$output .= '"></script>';
 			}
 		}
 	

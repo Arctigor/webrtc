@@ -51,4 +51,10 @@ class Controller {
   
   public function welcome() {
   }
+  
+  public function insertOffer() {
+  	
+  	print_r($_POST);
+  	
+  }
 }

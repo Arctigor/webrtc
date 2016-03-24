@@ -7,7 +7,6 @@ class Routes {
 					'template' => 'home',
 					'js' => array(
 							'/assets/js/jquery-2.2.1.min.js',
-							//'/assets/js/custom.js',
 							//'/assets/js/text_chat.js',
 					),
 			),
@@ -22,6 +21,15 @@ class Routes {
 			'welcome' => array(
 					'controller' => 'welcome',
 					'template' => 'welcome',
+					'js' => array(
+							'/assets/js/jquery-2.2.1.min.js',
+							'/assets/js/webrtc.js',
+							//'/assets/js/text_chat.js',
+					),
+			),
+			'insertOffer' => array(
+					'controller' => 'insertOffer',
+					'template' => 'insertOffer',
 			),
 	);
 

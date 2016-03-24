@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
+-- version 4.5.0.2
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2016 at 08:08 PM
--- Server version: 10.1.10-MariaDB
--- PHP Version: 7.0.2
+-- Generation Time: Mar 24, 2016 at 09:22 PM
+-- Server version: 10.0.17-MariaDB
+-- PHP Version: 5.6.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -28,25 +28,30 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `friends` (
   `userid` int(11) NOT NULL,
-  `friendids` int(11) NOT NULL
+  `friendid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `friends`
 --
 
-INSERT INTO `friends` (`userid`, `friendids`) VALUES
+INSERT INTO `friends` (`userid`, `friendid`) VALUES
 (1, 2);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `online_users`
+-- Table structure for table `offers`
 --
 
-CREATE TABLE `online_users` (
+CREATE TABLE `offers` (
   `id` int(11) NOT NULL,
-  `sdp` text NOT NULL
+  `offererid` int(11) NOT NULL,
+  `answererid` int(11) NOT NULL,
+  `offerersdp` text NOT NULL,
+  `answerersdp` text NOT NULL,
+  `status` varchar(40) NOT NULL,
+  `updatedtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -75,6 +80,12 @@ INSERT INTO `user` (`id`, `username`, `password`, `mail`) VALUES
 --
 
 --
+-- Indexes for table `offers`
+--
+ALTER TABLE `offers`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -86,6 +97,11 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for dumped tables
 --
 
+--
+-- AUTO_INCREMENT for table `offers`
+--
+ALTER TABLE `offers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `user`
 --
