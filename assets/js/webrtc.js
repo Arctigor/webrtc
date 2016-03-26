@@ -4,6 +4,15 @@ function webRTC() {
 	var offerer = false; // Role (offerer or answerer)
 	var peerConnection = null; // WebRTC PeerConnection
 	var dataChannel = null; // WebRTC DataChannel
+	var constraints = {
+			'mandatory' :
+			{
+				'OfferToReceiveAudio' : true,
+				'OfferToReceiveVideo' : true,
+				'iceTransports': 'relay'
+			}
+
+		}
 
 	var startButton = document.getElementById('startButton');
 	
@@ -28,7 +37,6 @@ function webRTC() {
 				type:"offer",
 				data:sessionDescriptionProtocol.sdp
 			};
-		
 		insertDataToDb(offerJSON);
 	}
 	

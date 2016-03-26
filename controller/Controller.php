@@ -28,10 +28,7 @@ class Controller {
   }
   
   public function formLogin() {
-  	$connection = Database::connect();
- 	if ($connection->connect_error) {
-   	 die("Connection failed: " . $conn->connect_error);
-	}
+  	$connection = $this->getConnection();
 	$userSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "'";
 	$userResult = $connection->query($userSql);
 	$user = $userResult->fetch_object();
@@ -53,8 +50,35 @@ class Controller {
   }
   
   public function insertOffer() {
+  	$data = $_POST;
+  	$offererId = $data['myId'];
+  	$answererId = $data['peerId'];
+  	$offererSdp = $data['data'];
+  	$offerType = $data['type'];
   	
-  	print_r($_POST);
+  	$connection = $this->getConnection();
+  	$getOfferIdSql = "SELECT * FROM `offers` WHERE offererId="."'" . $offererId .
+  										 "' AND " . "answererid='".$answererId.
+  										 "' AND status='".$offerType."' LIMIT 1";
+  	$getOfferIdResult = $connection->query($getOfferIdSql);
+  	$offer = $getOfferIdResult->fetch_object();
+  	if($offer){
+  		$updateOfferSql = "UPDATE offers SET offerersdp="."'" . $offererSdp. "'
+  				 WHERE id='".$offer->id."'";
+  		$connection->query($updateOfferSql); 
+  	} else {
+  		$insertOffer = "INSERT INTO offers (offererid, answererid, offerersdp, status) 
+  				VALUES ('".$offererId."', '".$answererId."', '".$offererSdp."', '".$offerType."')";
+  		$connection->query($insertOffer); 
+  	}
   	
+  }
+  
+  private function getConnection(){
+  	$connection = Database::connect();
+  	if ($connection->connect_error) {
+  		die("Connection failed: " . $conn->connect_error);
+  	}
+  	return $connection;
   }
 }
