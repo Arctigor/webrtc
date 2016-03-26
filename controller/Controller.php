@@ -74,6 +74,11 @@ class Controller {
   	
   }
   
+  public function getOffer(){
+  	print_r("hey");
+  	
+  }
+  
   private function getConnection(){
   	$connection = Database::connect();
   	if ($connection->connect_error) {

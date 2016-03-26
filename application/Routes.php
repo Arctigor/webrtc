@@ -31,6 +31,10 @@ class Routes {
 					'controller' => 'insertOffer',
 					'template' => 'insertOffer',
 			),
+			'getOffer' => array(
+					'controller' => 'getOffer',
+					'template' => 'getOffer',
+			),
 	);
 
 	public function getRoutes() {
