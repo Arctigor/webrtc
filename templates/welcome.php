@@ -1,7 +1,5 @@
 <div class="content">
-	<?php 
-		print_r("Welcome, ".$_SESSION['username']);
-	?>
+	Welcome <span id="username"><?php print $_SESSION['username']; ?></span>
 			<div id="buttons">
 				<button id="startButton">Start</button>
 				<button id="sendButton">Send</button>

@@ -37,6 +37,7 @@ class Controller {
 		$loginResult = $connection->query($loginSql);
 		if($user){
 			$_SESSION['username'] = $_POST['username'];
+			setcookie('id', $user->id, time() + (86400 * 30), "/"); 
 			header("Location: /welcome");
 		} else {
 			print_r("wrong username or password");
@@ -74,9 +75,38 @@ class Controller {
   	
   }
   
+  public function insertAnswer() {
+  	$data = $_POST;
+  	$offererId = $data['peerId'];
+  	$answererId = $data['myId'];
+  	$answererSdp = $data['data'];
+  	$offerType = $data['type'];
+  	 
+  	$connection = $this->getConnection();
+  	$getOfferIdSql = "SELECT * FROM `offers` WHERE offererId="."'" . $offererId .
+  	"' AND " . "answererid='".$answererId.
+  	"' AND status='offer' LIMIT 1";
+  	$getOfferIdResult = $connection->query($getOfferIdSql);
+  	$offer = $getOfferIdResult->fetch_object();
+  	if($offer){
+  		$updateOfferSql = "UPDATE offers SET answerersdp="."'" . $answererSdp."', status='".$offerType. "' 
+  				 WHERE id='".$offer->id."'";
+  		$connection->query($updateOfferSql);
+  	}
+  	 
+  }
+  
   public function getOffer(){
-  	print_r("hey");
+  	$data = $_POST;
+  	$answererId = $data['myId'];
   	
+  	$connection = $this->getConnection();
+  	$getOfferSql = "SELECT * FROM `offers` WHERE answererid='".$answererId.
+  	"' AND status='offer' LIMIT 1";
+  	
+  	$getOfferResult = $connection->query($getOfferSql);
+  	$offer = $getOfferResult->fetch_object();
+  	return new JsonResponse($offer);
   }
   
   private function getConnection(){

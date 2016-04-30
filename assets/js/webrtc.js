@@ -2,6 +2,7 @@ webRTC();
 
 function webRTC() {
 	var offerer = false; // Role (offerer or answerer)
+	var answeredConnection = false;
 	var localPeerConnection = null; // WebRTC PeerConnection
 	var dataChannel = null; // WebRTC DataChannel
 	var constraints = {
@@ -31,48 +32,80 @@ function webRTC() {
 	}
 	
 	function createOffer(sessionDescriptionProtocol){
-		localPeerConnection.setLocalDescription(sessionDescriptionProtocol);
-		var myId = getMyId();
-		var peerId = getPeerId();
-		offerJSON = {
-				myId:myId,
-				peerId:peerId,
-				type:"offer",
-				data:sessionDescriptionProtocol.sdp
+		localPeerConnection = new RTCPeerConnection(null);
+		localPeerConnection.createOffer(function(sessionDescriptionProtocol) {
+			localPeerConnection.setLocalDescription(sessionDescriptionProtocol);
+			var myId = getMyId();
+			var peerId = getPeerId();
+			offerJSON = {
+					myId:myId,
+					peerId:peerId,
+					type:"offer",
+					data:sessionDescriptionProtocol.sdp
 			};
-		insertDataToDb(offerJSON);
-		offerer = true;
+			insertDataToDb(offerJSON, "/insertOffer");
+			offerer = true;
+		}, errorHandler);
 	}
 	
-	function insertDataToDb(offerJSON){
+	function createAnswer(responseJSON){
+		var remoteSDP = new RTCSessionDescription();
+		remoteSDP.type = "offer";
+		remoteSDP.sdp = responseJSON.offerersdp;
+		
+		localPeerConnection = new RTCPeerConnection(null);
+		localPeerConnection.setRemoteDescription(remoteSDP);
+		localPeerConnection.createAnswer(function(sessionDescriptionProtocol) {
+			localPeerConnection.setLocalDescription(sessionDescriptionProtocol);
+			var myId = getMyId();
+			var peerId = getPeerId();
+			answerJSON = {
+					myId:myId,
+					peerId:peerId,
+					type:"answer",
+					data:sessionDescriptionProtocol.sdp
+			};
+			insertDataToDb(answerJSON, "/insertAnswer");
+			}, errorHandler);
+	}
+	
+	function insertDataToDb(offerJSON, url){
 		$.ajax({
 	         data: offerJSON,
 	         type: "post",
-	         url: "/insertOffer",
+	         url: url,
 		});
 	}
 	
 	function waitingForOffer(){
-		if(!offerer){
-			var responseJSON = getOfferFromDb();
-			if(responseJSON != null){
-				
+		if(!answeredConnection){
+			var success = null;
+			if(!offerer){
+				var responseJSON = getOfferFromDb();
+				if(responseJSON != null){
+					createAnswer(responseJSON);
+					answeredConnection = true;
+				}
 			}
 		}
 	}
 	
 	function getOfferFromDb(){
-		//TODO create ajax to get data from db
-		var responseJSON;
+		var myId = getMyId();
+		var responseJSON = null;
+		myDataJSON = {
+				myId:myId
+			};
 		$.ajax({
+			 data: myDataJSON,
 	         type: "post",
 	         url: "/getOffer",
+	         async:false,
 	         success:function(response){ 
-	        	 console.log(response);
+	        	 responseJSON = response;
 	            }
 		});
-		console.log(responseJSON);
-		return null;
+		return responseJSON;
 	}
 	
 	function errorHandler(error){
@@ -80,12 +113,19 @@ function webRTC() {
 	}
 	
 	function getMyId(){
-		return 1;
+		console.log(getCookie('id'));
+		return getCookie('id');
 	}
+	
 	
 	function getPeerId(){
 		return 2;
 	}
 	
+	function getCookie(name) {
+		var value = "; " + document.cookie;
+		var parts = value.split("; " + name + "=");
+		if (parts.length == 2) return parts.pop().split(";").shift();
+	}
 
 }
