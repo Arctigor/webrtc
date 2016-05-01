@@ -13,6 +13,7 @@ function webRTC() {
 		}
 
 	}
+	var peerId = null;
 	var startButton = document.getElementById('startButton');
 	var offerJSON;
 
@@ -22,9 +23,10 @@ function webRTC() {
 
 	startButton.onclick = createConnection;
 
-	var checkOffer = 5000;
+	var checkOfferAndAnswer = 5000; //milliseconds
 	createFriendsTable();
-	setInterval(waitingForOffer, checkOffer);
+	setInterval(waitingForOffer, checkOfferAndAnswer);
+	setInterval(waitingForAnswer, checkOfferAndAnswer);
 
 	function createConnection() {
 		localPeerConnection = new RTCPeerConnection(null);
@@ -39,6 +41,7 @@ function webRTC() {
 							.setLocalDescription(sessionDescriptionProtocol);
 					var myId = getMyId();
 					var peerId = getPeerId();
+					console.log(peerId);
 					offerJSON = {
 						myId : myId,
 						peerId : peerId,
@@ -62,7 +65,7 @@ function webRTC() {
 					localPeerConnection
 							.setLocalDescription(sessionDescriptionProtocol);
 					var myId = getMyId();
-					var peerId = getPeerId();
+					var peerId = responseJSON.offererid;
 					answerJSON = {
 						myId : myId,
 						peerId : peerId,
@@ -71,6 +74,7 @@ function webRTC() {
 					};
 					insertDataToDb(answerJSON, "/insertAnswer");
 				}, errorHandler);
+		console.log(localPeerConnection);
 	}
 
 	function insertDataToDb(offerJSON, url) {
@@ -93,6 +97,18 @@ function webRTC() {
 			}
 		}
 	}
+	
+	function waitingForAnswer() {
+		if (offerer) {
+			var success = null;
+			var responseJSON = getAnswerFromDb();
+			console.log(responseJSON);
+			if (responseJSON != null) {
+				offerer = false;
+			}
+		}
+	}
+	
 
 	function getOfferFromDb() {
 		var myId = getMyId();
@@ -111,14 +127,35 @@ function webRTC() {
 		});
 		return responseJSON;
 	}
+	
+	function getAnswerFromDb() {
+		var myId = getMyId();
+		var peerId = getPeerId();
+		var responseJSON = null;
+		myDataJSON = {
+			myId : myId,
+			peerId : peerId,
+		};
+		$.ajax({
+			data : myDataJSON,
+			type : "post",
+			url : "/getAnswer",
+			async : false,
+			success : function(response) {
+				responseJSON = response;
+			}
+		});
+		return responseJSON;
+	}
 
 	function errorHandler(error) {
 		console.error("Error at create offer: " + error);
 	}
 
 	function createFriendsTable() {
-		var friendsList = ["a","b","c"];
+		var friendsList = ["szabi","bene","c"];
 		populateTable(friendsList);
+		addRowHandlers();
 	}
 	
 	function populateTable(friendsList){
@@ -129,13 +166,38 @@ function webRTC() {
 			cell.innerHTML = value;
 			});
 	}
+	
+	function addRowHandlers() {
+    var table = document.getElementById("friendsTable");
+    var rows = table.getElementsByTagName("tr");
+    for (i = 0; i < rows.length; i++) {
+        var currentRow = table.rows[i];
+        var createClickHandler = 
+            function(row) 
+            {
+                return function() { 
+                                        var cell = row.getElementsByTagName("td")[0];
+                                        var id = cell.innerHTML;
+                                        if(!offerer){
+                                        if(id == 'szabi'){
+                                        	peerId = 2;
+                                        } else {
+                                        	peerId = 1;
+                                        }
+                                        }
+                                 };
+            };
+
+        currentRow.onclick = createClickHandler(currentRow);
+    }
+}
 
 	function getMyId() {
 		return getCookie('id');
 	}
 
 	function getPeerId() {
-		return 2;
+		return peerId;
 	}
 
 	function getCookie(name) {

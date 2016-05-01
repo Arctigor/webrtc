@@ -83,7 +83,7 @@ class Controller {
   	$offerType = $data['type'];
   	 
   	$connection = $this->getConnection();
-  	$getOfferIdSql = "SELECT * FROM `offers` WHERE offererId="."'" . $offererId .
+  	$getOfferIdSql = "SELECT * FROM `offers` WHERE offererid="."'" . $offererId .
   	"' AND " . "answererid='".$answererId.
   	"' AND status='offer' LIMIT 1";
   	$getOfferIdResult = $connection->query($getOfferIdSql);
@@ -102,7 +102,21 @@ class Controller {
   	
   	$connection = $this->getConnection();
   	$getOfferSql = "SELECT * FROM `offers` WHERE answererid='".$answererId.
-  	"' AND status='offer' LIMIT 1";
+  	"' AND status='offer' ORDER BY updatedtime DESC LIMIT 1";
+  	
+  	$getOfferResult = $connection->query($getOfferSql);
+  	$offer = $getOfferResult->fetch_object();
+  	return new JsonResponse($offer);
+  }
+  
+  public function getAnswer(){
+  	$data = $_POST;
+  	$offererId = $data['myId'];
+  	$answererId = $data['peerId'];
+  	
+  	$connection = $this->getConnection();
+  	$getOfferSql = "SELECT * FROM `offers` WHERE answererid='".$answererId."' AND offererid='".$offererId.
+  	"' AND status='answer' ORDER BY updatedtime DESC LIMIT 1";
   	
   	$getOfferResult = $connection->query($getOfferSql);
   	$offer = $getOfferResult->fetch_object();
