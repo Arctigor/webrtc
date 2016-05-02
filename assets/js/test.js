@@ -5,7 +5,6 @@ function webRTC() {
 	var answeredConnection = false;
 	var localPeerConnection = null; // WebRTC PeerConnection
 	var dataChannel = null; // WebRTC DataChannel
-	var iceCandidate = null;
 	var constraints = {
 		'mandatory' : {
 			'OfferToReceiveAudio' : true,
@@ -28,17 +27,26 @@ function webRTC() {
 	RTCSessionDescription = window.RTCSessionDescription;
 
 	createFriendsTable();
-	
-	var checkOfferAndAnswer = 5000; //milliseconds
-	setInterval(waitingForOffer, checkOfferAndAnswer);
-	setInterval(waitingForAnswer, checkOfferAndAnswer);
+
+	function trace(text) {
+		console.log((window.performance.now() / 1000).toFixed(3) + ': ' + text);
+	}
 
 	function createConnection() {
 		offerer = true;
 		var servers = null;
 		localPeerConnection = new RTCPeerConnection(servers);
 		createDC();
-		localPeerConnection.onicecandidate = getIceCandidate;
+		// try {
+		// Reliable Data Channels not yet supported in Chrome
+		// 'sendDataChannel', {
+		// reliable : false
+		// });
+		// } catch (e) {
+		// alert('Failed to create data channel. '
+		// + 'You need Chrome M25 or later with RtpDataChannel enabled');
+		// }
+		// localPeerConnection.onicecandidate = gotLocalCandidate;
 		localPeerConnection.createOffer(createOffer, errorHandler);
 	}
 
@@ -49,40 +57,20 @@ function webRTC() {
 							.setLocalDescription(sessionDescriptionProtocol);
 					var myId = getMyId();
 					var peerId = getPeerId();
+					console.log(peerId);
 					offerJSON = {
 						myId : myId,
 						peerId : peerId,
 						type : "offer",
 						data : sessionDescriptionProtocol.sdp
 					};
-					insertDataToDb(offerJSON, "/insertOffer");
 					console.log(localPeerConnection);
+					insertDataToDb(offerJSON, "/insertOffer");
 				}, errorHandler);
 	}
-	
-	function createAnswer(responseJSON) {
-		var remoteSDP = new RTCSessionDescription();
-		remoteSDP.type = "offer";
-		remoteSDP.sdp = responseJSON.offerersdp;
 
-		localPeerConnection = new RTCPeerConnection(null);
-		createDC();
-		localPeerConnection.setRemoteDescription(remoteSDP);
-		localPeerConnection.createAnswer(
-				function(sessionDescriptionProtocol) {
-					localPeerConnection
-							.setLocalDescription(sessionDescriptionProtocol);
-					var myId = getMyId();
-					var peerId = responseJSON.offererid;
-					answerJSON = {
-						myId : myId,
-						peerId : peerId,
-						type : "answer",
-						data : sessionDescriptionProtocol.sdp
-					};
-					console.log(localPeerConnection);
-					insertDataToDb(answerJSON, "/insertAnswer");
-				}, errorHandler);
+	function errorHandler(error) {
+		console.error("Error at create offer: " + error);
 	}
 
 	function insertDataToDb(offerJSON, url) {
@@ -93,117 +81,16 @@ function webRTC() {
 		});
 	}
 
-	function waitingForOffer() {
-		if (!answeredConnection) {
-			var success = null;
-			if (!offerer) {
-				var responseJSON = getOfferFromDb();
-				if (responseJSON != null) {
-					createAnswer(responseJSON);
-					answeredConnection = true;
-				}
-			}
-		}
-	}
-	
-	function waitingForAnswer() {
-		if (offerer) {
-			var success = null;
-			var responseJSON = getAnswerFromDb();
-			if (responseJSON != null) {
-				offerer = false;
-				var remoteSDP = new RTCSessionDescription();
-				remoteSDP.type = "answer";
-				remoteSDP.sdp = responseJSON.answerersdp;
-
-				localPeerConnection.setRemoteDescription(remoteSDP);
-				console.log(localPeerConnection);
-				console.log(iceCandidate);
-				var myId = getMyId();
-				candidateJSON = {
-						myId : myId,
-						peerId : peerId,
-						type : "candidate",
-						data : iceCandidate.candidate
-					};
-				insertDataToDb(candidateJSON, "/insertCandidate");
-			}
-		}
-	}
-	
-	function getOfferFromDb() {
-		var myId = getMyId();
-		var responseJSON = null;
-		myDataJSON = {
-			myId : myId
-		};
-		$.ajax({
-			data : myDataJSON,
-			type : "post",
-			url : "/getOffer",
-			async : false,
-			success : function(response) {
-				responseJSON = response;
-			}
-		});
-		return responseJSON;
-	}
-	
-	function getAnswerFromDb() {
-		var myId = getMyId();
-		var peerId = getPeerId();
-		var responseJSON = null;
-		myDataJSON = {
-			myId : myId,
-			peerId : peerId,
-		};
-		$.ajax({
-			data : myDataJSON,
-			type : "post",
-			url : "/getAnswer",
-			async : false,
-			success : function(response) {
-				responseJSON = response;
-			}
-		});
-		return responseJSON;
-	}
-
-	function errorHandler(error) {
-		console.error("Error at create offer: " + error);
-	}
-	
-	function getIceCandidate(){
-		var candidate = event.candidate;
-		if (candidate) {
-			iceCandidate = candidate;
-		}
-	}
-
 	function createDC() {
 		if (!offerer) {
 			localPeerConnection.ondatachannel = eventDC;
 		} else {
 			dataChannel = localPeerConnection.createDataChannel('myDataChannel');
 		//	dataChannel.onmessage = eventDCMessage;
-			dataChannel.onopen = eventDCOpen;
+		//	dataChannel.onopen = eventDCOpen;
 		//	dataChannel.onclose = eventDCClosed;
 		//	dataChannel.onerror = eventDCError;
 		}
-	}
-	
-	function eventDC(event) {
-		dataChannel = event.channel;
-		console.log("event");
-		console.log("event.channel");
-//		myDC.onmessage = eventDCMessage;
-		myDC.onopen = eventDCOpen;
-//		myDC.onclose = eventDCClosed;
-
-		}
-	
-	function eventDCOpen(){
-		console.log("on data channel open");
 	}
 
 	function gotLocalCandidate(event) {

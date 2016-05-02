@@ -96,6 +96,30 @@ class Controller {
   	 
   }
   
+  public function insertCandidate() {
+  	$data = $_POST;
+  	$offererId = $data['myId'];
+  	$answererId = $data['peerId'];
+  	$candidate = $data['data'];
+  	$offerType = $data['type'];
+  	 
+  	$connection = $this->getConnection();
+  	$getOfferIdSql = "SELECT * FROM `offers` WHERE offererid="."'" . $offererId .
+  	"' AND " . "answererid='".$answererId.
+  	"' AND status='answer' LIMIT 1";
+  	$getOfferIdResult = $connection->query($getOfferIdSql);
+  	$offer = $getOfferIdResult->fetch_object();
+  	var_dump("SELECT * FROM `offers` WHERE offererid="."'" . $offererId .
+  	"' AND " . "answererid='".$answererId.
+  	"' AND status='answer' LIMIT 1");
+  	if($offer){
+  		$updateOfferSql = "UPDATE offers SET candidate="."'" . $candidate."', status='".$offerType. "' 
+  				 WHERE id='".$offer->id."'";
+  		$connection->query($updateOfferSql);
+  	}
+  	 
+  }
+  
   public function getOffer(){
   	$data = $_POST;
   	$answererId = $data['myId'];
