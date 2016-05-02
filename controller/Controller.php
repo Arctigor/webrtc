@@ -147,6 +147,20 @@ class Controller {
   	return new JsonResponse($offer);
   }
   
+  public function getCandidate(){
+  	$data = $_POST;
+  	$answererId = $data['myId'];
+  	
+  	$connection = $this->getConnection();
+  	$getOfferSql = "SELECT * FROM `offers` WHERE answererid='".$answererId.
+  	"' AND status='candidate' ORDER BY updatedtime DESC LIMIT 1";
+  	
+  	$getOfferResult = $connection->query($getOfferSql);
+  	$offer = $getOfferResult->fetch_object();
+  	return new JsonResponse($offer);
+  }
+  
+  
   private function getConnection(){
   	$connection = Database::connect();
   	if ($connection->connect_error) {

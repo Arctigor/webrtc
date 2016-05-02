@@ -16,22 +16,26 @@ function webRTC() {
 	}
 	var peerId = null;
 	var startButton = document.getElementById('startButton');
+	var sendButton = document.getElementById('sendButton');
+	var dataChannelSend = document.getElementById('dataChannelSend');
+	var dataChannelReceive = document.getElementById('dataChannelReceive');
 	var offerJSON;
 	var localPeerConnection;
 	var receiveChannel;
 
-	var startButton = document.getElementById('startButton');
 	startButton.onclick = createConnection;
+	sendButton.onclick = sendData;
 
 	RTCPeerConnection = webkitRTCPeerConnection;
 	RTCIceCandidate = window.RTCIceCandidate;
 	RTCSessionDescription = window.RTCSessionDescription;
 
 	createFriendsTable();
-	
-	var checkOfferAndAnswer = 5000; //milliseconds
-	setInterval(waitingForOffer, checkOfferAndAnswer);
-	setInterval(waitingForAnswer, checkOfferAndAnswer);
+
+	var checkDb = 5000; // milliseconds
+	setInterval(waitingForOffer, checkDb);
+	setInterval(waitingForAnswer, checkDb);
+	setInterval(waitingForCandidate, checkDb);
 
 	function createConnection() {
 		offerer = true;
@@ -59,7 +63,7 @@ function webRTC() {
 					console.log(localPeerConnection);
 				}, errorHandler);
 	}
-	
+
 	function createAnswer(responseJSON) {
 		var remoteSDP = new RTCSessionDescription();
 		remoteSDP.type = "offer";
@@ -105,7 +109,7 @@ function webRTC() {
 			}
 		}
 	}
-	
+
 	function waitingForAnswer() {
 		if (offerer) {
 			var success = null;
@@ -121,16 +125,34 @@ function webRTC() {
 				console.log(iceCandidate);
 				var myId = getMyId();
 				candidateJSON = {
-						myId : myId,
-						peerId : peerId,
-						type : "candidate",
-						data : iceCandidate.candidate
-					};
+					myId : myId,
+					peerId : peerId,
+					type : "candidate",
+					data : iceCandidate.candidate
+				};
 				insertDataToDb(candidateJSON, "/insertCandidate");
 			}
 		}
 	}
-	
+
+	function waitingForCandidate() {
+		if (answeredConnection) {
+			var success = null;
+			var responseJSON = getCandidateFromDb();
+			if (responseJSON != null) {
+				var iceCandidate = new RTCIceCandidate({
+					candidate : responseJSON.candidate
+				});
+				iceCandidate.sdpMid = 'data';
+				iceCandidate.sdpMLineIndex = 0;
+
+				localPeerConnection.addIceCandidate(iceCandidate);
+				console.log(localPeerConnection);
+				answeredConnection = false;
+			}
+		}
+	}
+
 	function getOfferFromDb() {
 		var myId = getMyId();
 		var responseJSON = null;
@@ -148,7 +170,7 @@ function webRTC() {
 		});
 		return responseJSON;
 	}
-	
+
 	function getAnswerFromDb() {
 		var myId = getMyId();
 		var peerId = getPeerId();
@@ -169,11 +191,29 @@ function webRTC() {
 		return responseJSON;
 	}
 
+	function getCandidateFromDb() {
+		var myId = getMyId();
+		var responseJSON = null;
+		myDataJSON = {
+			myId : myId
+		};
+		$.ajax({
+			data : myDataJSON,
+			type : "post",
+			url : "/getCandidate",
+			async : false,
+			success : function(response) {
+				responseJSON = response;
+			}
+		});
+		return responseJSON;
+	}
+
 	function errorHandler(error) {
 		console.error("Error at create offer: " + error);
 	}
-	
-	function getIceCandidate(){
+
+	function getIceCandidate() {
 		var candidate = event.candidate;
 		if (candidate) {
 			iceCandidate = candidate;
@@ -184,26 +224,39 @@ function webRTC() {
 		if (!offerer) {
 			localPeerConnection.ondatachannel = eventDC;
 		} else {
-			dataChannel = localPeerConnection.createDataChannel('myDataChannel');
-		//	dataChannel.onmessage = eventDCMessage;
+			dataChannel = localPeerConnection
+					.createDataChannel('myDataChannel');
+			dataChannel.onmessage = eventDCMessage;
 			dataChannel.onopen = eventDCOpen;
-		//	dataChannel.onclose = eventDCClosed;
-		//	dataChannel.onerror = eventDCError;
+			// dataChannel.onclose = eventDCClosed;
+			// dataChannel.onerror = eventDCError;
 		}
 	}
-	
+
 	function eventDC(event) {
 		dataChannel = event.channel;
-		console.log("event");
-		console.log("event.channel");
-//		myDC.onmessage = eventDCMessage;
-		myDC.onopen = eventDCOpen;
-//		myDC.onclose = eventDCClosed;
+		dataChannel.onmessage = eventDCMessage;
+		dataChannel.onopen = eventDCOpen;
+		// myDC.onclose = eventDCClosed;
 
-		}
+	}
+
+	function eventDCMessage(event) {
+		dataChannelReceive.value += event.data +"\n";
+	}
+
+	function eventDCOpen() {
+		sendButton.disabled = false;
+		dataChannelSend.disabled = false;
+		dataChannelSend.focus();
+		dataChannelSend.placeholder = '';
+	}
 	
-	function eventDCOpen(){
-		console.log("on data channel open");
+	function sendData() {
+		var data = dataChannelSend.value;
+		dataChannel.send(data);
+		dataChannelSend.value = '';
+		dataChannelReceive.value += data+"\n";
 	}
 
 	function gotLocalCandidate(event) {
