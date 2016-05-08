@@ -11,7 +11,7 @@
 		<div id="send">
 			<h2>Send</h2>
 			<textarea id="dataChannelSend" disabled
-				placeholder="Press Start, enter some text, then press Send."></textarea>
+				placeholder=""></textarea>
 		</div>
 		<div id="receive">
 			<h2>Receive</h2>

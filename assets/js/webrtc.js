@@ -238,7 +238,7 @@ function webRTC() {
 					.createDataChannel('myDataChannel');
 			dataChannel.onmessage = eventDCMessage;
 			dataChannel.onopen = eventDCOpen;
-			// dataChannel.onclose = eventDCClosed;
+			dataChannel.onclose = eventDCClosed;
 			// dataChannel.onerror = eventDCError;
 		}
 	}
@@ -247,7 +247,7 @@ function webRTC() {
 		dataChannel = event.channel;
 		dataChannel.onmessage = eventDCMessage;
 		dataChannel.onopen = eventDCOpen;
-		// myDC.onclose = eventDCClosed;
+		dataChannel.onclose = eventDCClosed;
 
 	}
 
@@ -258,6 +258,13 @@ function webRTC() {
 	function eventDCOpen() {
 		sendButton.disabled = false;
 		dataChannelSend.disabled = false;
+		dataChannelSend.focus();
+		dataChannelSend.placeholder = '';
+	}
+	
+	function eventDCClosed() {
+		sendButton.disabled = true;
+		dataChannelSend.disabled = true;
 		dataChannelSend.focus();
 		dataChannelSend.placeholder = '';
 	}
