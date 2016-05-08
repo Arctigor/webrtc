@@ -51,6 +51,10 @@ class Routes {
 					'controller' => 'getCandidate',
 					'template' => 'getCandidate',
 			),
+			'completeConnection' => array(
+					'controller' => 'completeConnection',
+					'template' => 'completeConnection',
+			),
 	);
 
 	public function getRoutes() {

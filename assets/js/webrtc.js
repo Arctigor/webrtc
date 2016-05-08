@@ -26,9 +26,9 @@ function webRTC() {
 	startButton.onclick = createConnection;
 	sendButton.onclick = sendData;
 
-	RTCPeerConnection = webkitRTCPeerConnection;
-	RTCIceCandidate = window.RTCIceCandidate;
-	RTCSessionDescription = window.RTCSessionDescription;
+	RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+	RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+	RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
 
 	createFriendsTable();
 
@@ -41,7 +41,7 @@ function webRTC() {
 		offerer = true;
 		var servers = null;
 		localPeerConnection = new RTCPeerConnection(servers);
-		createDC();
+		createDataChannel();
 		localPeerConnection.onicecandidate = getIceCandidate;
 		localPeerConnection.createOffer(createOffer, errorHandler);
 	}
@@ -70,7 +70,7 @@ function webRTC() {
 		remoteSDP.sdp = responseJSON.offerersdp;
 
 		localPeerConnection = new RTCPeerConnection(null);
-		createDC();
+		createDataChannel();
 		localPeerConnection.setRemoteDescription(remoteSDP);
 		localPeerConnection.createAnswer(
 				function(sessionDescriptionProtocol) {
@@ -149,6 +149,7 @@ function webRTC() {
 				localPeerConnection.addIceCandidate(iceCandidate);
 				console.log(localPeerConnection);
 				answeredConnection = false;
+				completeConnection(responseJSON);
 			}
 		}
 	}
@@ -209,18 +210,27 @@ function webRTC() {
 		return responseJSON;
 	}
 
-	function errorHandler(error) {
-		console.error("Error at create offer: " + error);
-	}
-
 	function getIceCandidate() {
 		var candidate = event.candidate;
 		if (candidate) {
 			iceCandidate = candidate;
 		}
 	}
+	
+	function completeConnection(responseJSON){
+		var myId = getMyId();
+		myDataJSON = {
+			myId : myId,
+			offererId : responseJSON.offererid,
+		};
+		insertDataToDb(myDataJSON, "/completeConnection");
+	}
+	
+	function errorHandler(error) {
+		console.error("Error at create offer: " + error);
+	}
 
-	function createDC() {
+	function createDataChannel() {
 		if (!offerer) {
 			localPeerConnection.ondatachannel = eventDC;
 		} else {

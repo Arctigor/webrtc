@@ -160,6 +160,22 @@ class Controller {
   	return new JsonResponse($offer);
   }
   
+  public function completeConnection(){
+  	$data = $_POST;
+  	$answererId = $data['myId'];
+  	$offererId = $data['offererId'];
+  	
+  	$connection = $this->getConnection();
+  	$getOfferSql = "SELECT * FROM `offers` WHERE answererid='".$answererId."' AND offererid='".$offererId.
+  	"' AND status='candidate' ORDER BY updatedtime DESC LIMIT 1";
+  	
+  	$getOfferResult = $connection->query($getOfferSql);
+  	$offer = $getOfferResult->fetch_object();
+    if($offer){
+  		$updateOfferSql = "UPDATE offers SET status='complete' WHERE id='".$offer->id."'";
+  		$connection->query($updateOfferSql);
+  	}
+  }
   
   private function getConnection(){
   	$connection = Database::connect();
