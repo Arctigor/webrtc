@@ -19,16 +19,23 @@ function webRTC() {
 	var sendButton = document.getElementById('sendButton');
 	var dataChannelSend = document.getElementById('dataChannelSend');
 	var dataChannelReceive = document.getElementById('dataChannelReceive');
+	var localVideo = document.getElementById('localVideo');
+	var remoteVideo = document.getElementById('remoteVideo');
+	var friendsTable = document.getElementById("friendsTable");
 	var offerJSON;
+	var friendsList;
+	var selectedFriend;
 	var localPeerConnection;
 	var receiveChannel;
 
 	startButton.onclick = createConnection;
 	sendButton.onclick = sendData;
 
-	RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+	RTCPeerConnection = window.mozRTCPeerConnection
+			|| window.webkitRTCPeerConnection;
 	RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
-	RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
+	RTCSessionDescription = window.mozRTCSessionDescription
+			|| window.RTCSessionDescription;
 
 	createFriendsTable();
 
@@ -41,6 +48,7 @@ function webRTC() {
 		offerer = true;
 		var servers = null;
 		localPeerConnection = new RTCPeerConnection(servers);
+		setLocalMedia();
 		createDataChannel();
 		localPeerConnection.onicecandidate = getIceCandidate;
 		localPeerConnection.createOffer(createOffer, errorHandler);
@@ -216,8 +224,8 @@ function webRTC() {
 			iceCandidate = candidate;
 		}
 	}
-	
-	function completeConnection(responseJSON){
+
+	function completeConnection(responseJSON) {
 		var myId = getMyId();
 		myDataJSON = {
 			myId : myId,
@@ -225,9 +233,25 @@ function webRTC() {
 		};
 		insertDataToDb(myDataJSON, "/completeConnection");
 	}
+
+	function setLocalMedia() {
+		/*navigator.getUserMedia = navigator.getUserMedia
+				|| navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+		navigator.getUserMedia({
+			video : true,
+			audio : true
+		}, gotStream, errorHandler);*/
+	}
 	
+	function gotStream(stream) {
+		  localVideo.src = URL.createObjectURL(stream);
+		  localStream = stream;
+		  console.log('Stream: ');
+		  console.log(localVideo.src);
+		}
+
 	function errorHandler(error) {
-		console.error("Error at create offer: " + error);
+		console.error(error);
 	}
 
 	function createDataChannel() {
@@ -239,7 +263,7 @@ function webRTC() {
 			dataChannel.onmessage = eventDCMessage;
 			dataChannel.onopen = eventDCOpen;
 			dataChannel.onclose = eventDCClosed;
-			// dataChannel.onerror = eventDCError;
+		    dataChannel.onerror = eventDCError;
 		}
 	}
 
@@ -248,11 +272,12 @@ function webRTC() {
 		dataChannel.onmessage = eventDCMessage;
 		dataChannel.onopen = eventDCOpen;
 		dataChannel.onclose = eventDCClosed;
+		dataChannel.onerror = eventDCError;
 
 	}
 
 	function eventDCMessage(event) {
-		dataChannelReceive.value += event.data +"\n";
+		dataChannelReceive.value += getPeerUsername(event.data) + ": " +event.data + "\n";
 	}
 
 	function eventDCOpen() {
@@ -261,7 +286,7 @@ function webRTC() {
 		dataChannelSend.focus();
 		dataChannelSend.placeholder = '';
 	}
-	
+
 	function eventDCClosed() {
 		sendButton.disabled = true;
 		dataChannelSend.disabled = true;
@@ -269,11 +294,15 @@ function webRTC() {
 		dataChannelSend.placeholder = '';
 	}
 	
+	function eventDCError(event) {
+		console.log(event);
+	}
+
 	function sendData() {
 		var data = dataChannelSend.value;
 		dataChannel.send(data);
 		dataChannelSend.value = '';
-		dataChannelReceive.value += data+"\n";
+		dataChannelReceive.value += getMyUsername() +": "+data + "\n";
 	}
 
 	function gotLocalCandidate(event) {
@@ -284,41 +313,69 @@ function webRTC() {
 	}
 
 	function createFriendsTable() {
-		var friendsList = [ "szabi", "bene", "c" ];
-		populateTable(friendsList);
-		addRowHandlers();
+		var responseJSON = getFriendsFromDb();
+		if (responseJSON != null) {
+			friendsList=responseJSON;
+			populateTable();
+			addRowHandlers();
+		}
+	}
+	
+	function getFriendsFromDb(){
+		var myId = getMyId();
+		var responseJSON = null;
+		myDataJSON = {
+			myId : myId
+		};
+		$.ajax({
+			data : myDataJSON,
+			type : "post",
+			url : "/getFriends",
+			async : false,
+			success : function(response) {
+				responseJSON = response;
+			}
+		});
+		return responseJSON;
 	}
 
-	function populateTable(friendsList) {
-		var friendsTable = document.getElementById("friendsTable");
+	function populateTable() {
 		$.each(friendsList, function(key, value) {
 			var row = friendsTable.insertRow(-1);
 			var cell = row.insertCell(0);
-			cell.innerHTML = value;
+			cell.innerHTML = value.username;
 		});
 	}
 
 	function addRowHandlers() {
-		var table = document.getElementById("friendsTable");
-		var rows = table.getElementsByTagName("tr");
+		var rows = friendsTable.getElementsByTagName("tr");
 		for (i = 0; i < rows.length; i++) {
-			var currentRow = table.rows[i];
+			var currentRow = friendsTable.rows[i];
 			var createClickHandler = function(row) {
 				return function() {
 					var cell = row.getElementsByTagName("td")[0];
 					var id = cell.innerHTML;
 					if (!offerer) {
-						if (id == 'szabi') {
-							peerId = 2;
-						} else {
-							peerId = 1;
-						}
+						$.each(friendsList, function(key, value) {
+							if(value.username == id){
+								selectedFriend = value;
+								peerId = selectedFriend.id;
+							}
+						});
 					}
 				};
 			};
 
 			currentRow.onclick = createClickHandler(currentRow);
 		}
+	}
+	
+	function getPeerUsername(data){
+		return "answer";
+	}
+	
+	function getMyUsername(){
+		return getCookie('username');
 	}
 
 	function getMyId() {

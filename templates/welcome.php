@@ -19,6 +19,11 @@
 		</div>
 	</div>
 	<br></br>
+	<div id="video">
+		<video style="height:90px;width:190" id="localVideo" autoplay muted></video>
+    	<video style="height:90px;width:190" id="remoteVideo" autoplay></video>
+	</div>
+	<br></br>
 	<table id="friendsTable"class="tg">
 		<tr>
 			<th class="tg-yw4l">Friends</th>

@@ -55,6 +55,10 @@ class Routes {
 					'controller' => 'completeConnection',
 					'template' => 'completeConnection',
 			),
+			'getFriends' => array(
+					'controller' => 'getFriends',
+					'template' => 'getFriends',
+			),
 	);
 
 	public function getRoutes() {

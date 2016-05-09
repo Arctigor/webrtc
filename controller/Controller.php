@@ -38,6 +38,7 @@ class Controller {
 		if($user){
 			$_SESSION['username'] = $_POST['username'];
 			setcookie('id', $user->id, time() + (86400 * 30), "/"); 
+			setcookie('username', $_SESSION['username'], time() + (86400 * 30), "/"); 
 			header("Location: /welcome");
 		} else {
 			print_r("wrong username or password");
@@ -175,6 +176,25 @@ class Controller {
   		$updateOfferSql = "UPDATE offers SET status='complete' WHERE id='".$offer->id."'";
   		$connection->query($updateOfferSql);
   	}
+  }
+  
+  public function getFriends(){
+  	$data = $_POST;
+  	$myId = $data['myId'];
+  	
+  	$connection = $this->getConnection();
+  	
+  	$getFriends = "SELECT user.id,user.username FROM user INNER JOIN friends 
+  		WHERE friends.userid='".$myId."' AND user.id=friends.friendid";
+  	$getFriendsResult = $connection->query($getFriends);
+  	$friendsArray = array();
+    $row_array['id'] = '2';
+    $row_array['username'] = 'szabi';
+    array_push($friendsArray,$row_array);
+    $row_array['id'] = '3';
+    $row_array['username'] = 'andrea';
+    array_push($friendsArray,$row_array);
+  	return new JsonResponse($friendsArray);
   }
   
   private function getConnection(){
