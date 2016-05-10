@@ -16,14 +16,14 @@ class Controller {
     $this->template = $routes[$path]['template'];
   }
 
+  public function welcome() {}
+  
   public function home() {
   	return array();
   }
 
   public function login() {
-    return array(
-      'data' => 'A Despre Noi oldal',
-    );
+    return array();
   }
   
   public function logout(){
@@ -31,6 +31,10 @@ class Controller {
   	$this->unsetCookie('username');
 	session_destroy();
 	header("Location: /");
+  }
+  
+  public function register() {
+    return array();
   }
   
   public function formLogin() {
@@ -47,14 +51,30 @@ class Controller {
 			setcookie('username', $_SESSION['username'], time() + (86400 * 30), "/"); 
 			header("Location: /welcome");
 		} else {
-			print_r("wrong username or password");
+			print_r("Wrong username or password");
 		}
 	} else {
-			print_r("wrong username or password");
+			print_r("Wrong username or password");
 	}
   }
   
-  public function welcome() {
+  public function formRegister() {
+  	$connection = $this->getConnection();
+  	$username = $_POST['username'];
+  	$email = $_POST['email'];
+  	$pass = $this->encode($_POST['password']);
+  	$confPass = $this->encode($_POST['confirm-password']);
+  	if($this->validatePassword($pass, $confPass)){
+  		if($this->validateUsername($username)){
+  			if($this->validateEmail($email)){
+  				$registerSql = "INSERT INTO user VALUES (0, '".$username."', '".$pass."', '".$email."', 0)";
+  				$registerResult = $connection->query($registerSql);
+  				var_dump($registerSql);
+  			//	header("Location: /");	
+  			}
+  		}
+  	}
+ 	 
   }
   
   public function insertOffer() {
@@ -201,6 +221,26 @@ class Controller {
     $row_array['username'] = 'andrea';
     array_push($friendsArray,$row_array);
   	return new JsonResponse($friendsArray);
+  }
+  
+  private function validatePassword($pass, $confPass){
+    //TODO: insert validation
+  	return true;
+  }
+  
+  private function validateUsername($username){
+    //TODO: insert validation
+	return true;
+  }
+	
+  private function validateEmail($email){
+    //TODO: insert validation
+  	return true;
+  }
+  
+  private function encode($password){
+    //TODO: encode password
+    return $password;
   }
   
   private function unsetCookie($cookie){
