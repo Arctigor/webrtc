@@ -277,7 +277,8 @@ function webRTC() {
 	}
 
 	function eventDCMessage(event) {
-		dataChannelReceive.value += getPeerUsername(event.data) + ": " +event.data + "\n";
+		var dataArray = decode(event.data);
+		dataChannelReceive.value += getPeerUsername(dataArray) + ": " +dataArray[1] + "\n";
 	}
 
 	function eventDCOpen() {
@@ -300,9 +301,10 @@ function webRTC() {
 
 	function sendData() {
 		var data = dataChannelSend.value;
-		dataChannel.send(data);
 		dataChannelSend.value = '';
-		dataChannelReceive.value += getMyUsername() +": "+data + "\n";
+		var username = getMyUsername();
+		dataChannelReceive.value += username +": "+data + "\n";
+		dataChannel.send(encode(username)+data);
 	}
 
 	function gotLocalCandidate(event) {
@@ -370,8 +372,16 @@ function webRTC() {
 		}
 	}
 	
+	function encode(username){
+		return username+"@#$";
+	}
+	
+	function decode(data){
+		return data.split("@#$");
+	}
+	
 	function getPeerUsername(data){
-		return "answer";
+		return data[0];
 	}
 	
 	function getMyUsername(){
