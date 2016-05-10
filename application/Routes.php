@@ -18,6 +18,10 @@ class Routes {
 					'controller' => 'formLogin',
 					'template' => 'formLogin',
 			),
+			'logout' => array(
+					'controller' => 'logout',
+					'template' => 'logout',
+			),
 			'welcome' => array(
 					'controller' => 'welcome',
 					'template' => 'welcome',

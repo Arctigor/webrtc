@@ -18,13 +18,19 @@ class Controller {
 
   public function home() {
   	return array();
-    return new JsonResponse(array('data' => 'awesome'));
   }
 
   public function login() {
     return array(
       'data' => 'A Despre Noi oldal',
     );
+  }
+  
+  public function logout(){
+  	$this->unsetCookie('id');
+  	$this->unsetCookie('username');
+	session_destroy();
+	header("Location: /");
   }
   
   public function formLogin() {
@@ -195,6 +201,11 @@ class Controller {
     $row_array['username'] = 'andrea';
     array_push($friendsArray,$row_array);
   	return new JsonResponse($friendsArray);
+  }
+  
+  private function unsetCookie($cookie){
+    unset($_COOKIE[$cookie]);
+    setcookie($cookie, null, -1, '/');
   }
   
   private function getConnection(){
