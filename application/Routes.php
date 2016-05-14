@@ -51,6 +51,10 @@ class Routes {
 					'controller' => 'insertCandidate',
 					'template' => 'insertCandidate',
 			),
+			'insertConversation' => array(
+					'controller' => 'insertConversation',
+					'template' => 'insertConversation',
+			),
 			'getOffer' => array(
 					'controller' => 'getOffer',
 					'template' => 'getOffer',

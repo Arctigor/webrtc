@@ -278,7 +278,10 @@ function webRTC() {
 
 	function eventDCMessage(event) {
 		var dataArray = decode(event.data);
-		dataChannelReceive.value += getPeerUsername(dataArray) + ": " +dataArray[1] + "\n";
+		var message = dataArray[1];
+		var peerUsername = getPeerUsername(dataArray);
+		dataChannelReceive.value += peerUsername + ": " +message + "\n";
+		saveConversation(peerUsername, message);
 	}
 
 	function eventDCOpen() {
@@ -339,6 +342,16 @@ function webRTC() {
 			}
 		});
 		return responseJSON;
+	}
+	
+	function saveConversation(peerUsername, data){
+		var myUsername = getMyUsername();
+		convJSON = {
+				myUsername : myUsername,
+				peerUsername : peerUsername,
+				conversation : data,
+			};
+		insertDataToDb(convJSON, "/insertConversation");
 	}
 
 	function populateTable() {

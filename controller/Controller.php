@@ -136,15 +136,23 @@ class Controller {
   	"' AND status='answer' LIMIT 1";
   	$getOfferIdResult = $connection->query($getOfferIdSql);
   	$offer = $getOfferIdResult->fetch_object();
-  	var_dump("SELECT * FROM `offers` WHERE offererid="."'" . $offererId .
-  	"' AND " . "answererid='".$answererId.
-  	"' AND status='answer' LIMIT 1");
   	if($offer){
   		$updateOfferSql = "UPDATE offers SET candidate="."'" . $candidate."', status='".$offerType. "' 
   				 WHERE id='".$offer->id."'";
   		$connection->query($updateOfferSql);
   	}
-  	 
+  }
+  
+  public function insertConversation(){
+  	$data = $_POST;
+  	$offererUsername = $data['myUsername'];
+  	$peerUsername = $data['peerUsername'];
+  	$conversation = $data['conversation'];
+  	
+  	$connection = $this->getConnection();
+  	$insertHistory = "INSERT INTO offers (offererid, answererid, offerersdp, status) 
+  				VALUES ('".$offererId."', '".$answererId."', '".$offererSdp."', '".$offerType."')";
+  	
   }
   
   public function getOffer(){
