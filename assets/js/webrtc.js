@@ -349,7 +349,7 @@ function webRTC() {
 		convJSON = {
 				myUsername : myUsername,
 				peerUsername : peerUsername,
-				conversation : data,
+				message : data,
 			};
 		insertDataToDb(convJSON, "/insertConversation");
 	}

@@ -147,12 +147,11 @@ class Controller {
   	$data = $_POST;
   	$offererUsername = $data['myUsername'];
   	$peerUsername = $data['peerUsername'];
-  	$conversation = $data['conversation'];
+  	$message = $data['message'];
   	
   	$connection = $this->getConnection();
-  	$insertHistory = "INSERT INTO offers (offererid, answererid, offerersdp, status) 
-  				VALUES ('".$offererId."', '".$answererId."', '".$offererSdp."', '".$offerType."')";
-  	
+  	$insertHistory = "INSERT INTO history VALUES (0, '".$offererUsername."', '".$peerUsername."', '".$message."')";
+  	$connection->query($insertHistory); 
   }
   
   public function getOffer(){
