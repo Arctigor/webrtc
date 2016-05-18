@@ -24,6 +24,12 @@
     	<video style="height:90px;width:190" id="remoteVideo" autoplay></video>
 	</div>
 	<br></br>
+	<div class="content">
+  		<form action="formAddUser" method="POST">
+	   	 	<input type="text" name="username" placeholder="Add friend by username"><br>
+  			<input type="submit" value="Add Friend">
+		</form>
+	</div>
 	<table id="friendsTable"class="tg">
 		<tr>
 			<th class="tg-yw4l">Friends</th>

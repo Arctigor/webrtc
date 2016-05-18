@@ -1,11 +1,12 @@
 webRTC();
 
-function webRTC() {
+function webRTC() {	
 	var offerer = false; // Role (offerer or answerer)
 	var answeredConnection = false;
 	var localPeerConnection = null; // WebRTC PeerConnection
 	var dataChannel = null; // WebRTC DataChannel
 	var iceCandidate = null;
+	var isCandidateSet = false;
 	var constraints = {
 		'mandatory' : {
 			'OfferToReceiveAudio' : true,
@@ -22,6 +23,8 @@ function webRTC() {
 	var localVideo = document.getElementById('localVideo');
 	var remoteVideo = document.getElementById('remoteVideo');
 	var friendsTable = document.getElementById("friendsTable");
+	var addFriendButton = document.getElementById("addFriendButton");
+	var addFriendTextbox = document.getElementById("addFriendButton");
 	var offerJSON;
 	var friendsList;
 	var selectedFriend;
@@ -46,8 +49,7 @@ function webRTC() {
 
 	function createConnection() {
 		offerer = true;
-		var servers = null;
-		localPeerConnection = new RTCPeerConnection(servers);
+		localPeerConnection = new RTCPeerConnection(null);
 		setLocalMedia();
 		createDataChannel();
 		localPeerConnection.onicecandidate = getIceCandidate;
@@ -221,7 +223,10 @@ function webRTC() {
 	function getIceCandidate() {
 		var candidate = event.candidate;
 		if (candidate) {
-			iceCandidate = candidate;
+			if(isCandidateSet == 0){
+				isCandidateSet = true;
+				iceCandidate = candidate;
+			}
 		}
 	}
 
@@ -235,12 +240,12 @@ function webRTC() {
 	}
 
 	function setLocalMedia() {
-		/*navigator.getUserMedia = navigator.getUserMedia
+		navigator.getUserMedia = navigator.getUserMedia
 				|| navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 		navigator.getUserMedia({
 			video : true,
 			audio : true
-		}, gotStream, errorHandler);*/
+		}, gotStream, errorHandler);
 	}
 	
 	function gotStream(stream) {
