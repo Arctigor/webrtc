@@ -69,7 +69,6 @@ class Controller {
   			if($this->validateEmail($email)){
   				$registerSql = "INSERT INTO user VALUES (0, '".$username."', '".$pass."', '".$email."', 0)";
   				$registerResult = $connection->query($registerSql);
-  				var_dump($registerSql);
   			//	header("Location: /");	
   			}
   		}
@@ -129,7 +128,6 @@ class Controller {
   	$answererId = $data['peerId'];
   	$candidate = $data['data'];
   	$offerType = $data['type'];
-  	 
   	$connection = $this->getConnection();
   	$getOfferIdSql = "SELECT * FROM `offers` WHERE offererid="."'" . $offererId .
   	"' AND " . "answererid='".$answererId.
@@ -137,7 +135,7 @@ class Controller {
   	$getOfferIdResult = $connection->query($getOfferIdSql);
   	$offer = $getOfferIdResult->fetch_object();
   	if($offer){
-  		$updateOfferSql = "UPDATE offers SET candidate="."'" . $candidate."', status='".$offerType. "' 
+  		$updateOfferSql = "UPDATE offers SET candidate="."'" . $candidate."', status='".$offerType. "'
   				 WHERE id='".$offer->id."'";
   		$connection->query($updateOfferSql);
   	}
