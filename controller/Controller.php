@@ -209,6 +209,34 @@ class Controller {
   	}
   }
   
+  public function addFriend(){
+  	$data = $_POST;
+  	$myId = $data['myId'];
+  	$username = $data['username'];
+  	
+  	$toRet = "fail";
+  	
+  	$connection = $this->getConnection();
+  	$getUserSql = "SELECT * FROM `user` WHERE username='".$username."' LIMIT 1";
+  	$getUserResult = $connection->query($getUserSql);
+  	$user = $getUserResult->fetch_object();
+  	if($user){
+ 	  $getFriendSql = "SELECT * FROM `friends` WHERE userid='".$myId."' AND friendid='".$user->id."'";
+  	  $getFriendResult = $connection->query($getFriendSql);
+  	  $friend = $getFriendResult->fetch_object();
+  	  if(!$friend){
+  	    $insertFriend = "INSERT INTO friends VALUES (0,'".$myId."', '".$user->id."')";
+  	    $connection->query($insertFriend); 
+  	    $insertFriend = "INSERT INTO friends VALUES (0,'".$user->id."', '".$myId."')";
+  	    $connection->query($insertFriend); 
+  	    $toRet = "success";
+  	  }
+  	}
+  	$arrayFriend = array();
+  	$arrayFriend["result"] = $toRet;
+  	return new JsonResponse($arrayFriend);
+  }
+  
   public function getFriends(){
   	$data = $_POST;
   	$myId = $data['myId'];

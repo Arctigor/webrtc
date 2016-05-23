@@ -19,7 +19,7 @@ function webRTC() {
 	var remoteVideo = document.getElementById('remoteVideo');
 	var friendsTable = document.getElementById("friendsTable");
 	var addFriendButton = document.getElementById("addFriendButton");
-	var addFriendTextbox = document.getElementById("addFriendButton");
+	var addFriendTextBox = document.getElementById("addFriendTextBox");
 	var offerJSON;
 	var friendsList;
 	var selectedFriend;
@@ -40,7 +40,9 @@ function webRTC() {
 	setInterval(waitingForCandidate, checkDb);
 
 	startButton.disabled = false;
+	
 	startButton.onclick = createConnection;
+	addFriendButton.onclick = addFriendByUser;
 	sendButton.onclick = sendData;
 
 	function createConnection() {
@@ -295,6 +297,25 @@ function webRTC() {
 		return responseJSON;
 	}
 	
+	function addFriendsByUsername(username) {
+		var myId = getMyId();
+		var responseJSON = null;
+		myDataJSON = {
+			myId : myId,
+			username : username,
+		};
+		$.ajax({
+			data : myDataJSON,
+			type : "post",
+			url : "/addFriend",
+			async : false,
+			success : function(response) {
+				responseJSON = response;
+			}
+		});
+		return responseJSON;
+	}
+	
 	function saveConversation(peerUsername, data) {
 		var myUsername = getMyUsername();
 		convJSON = {
@@ -359,6 +380,24 @@ function webRTC() {
 		var username = getMyUsername();
 		dataChannelReceive.value += username + ": " + data + "\n";
 		dataChannel.send(encode(username) + data);
+	}
+	
+	function addFriendByUser() {
+		var responseJSON = addFriendsByUsername(addFriendTextBox.value);
+		if (responseJSON.result == "success") {
+			deleteFriendsTable();
+			createFriendsTable();
+		} else {
+			alert("User "+addFriendTextBox.value+" doesn't not exist or is already in your friend list");
+		}
+		addFriendTextBox.value = "";
+	}
+	
+	function deleteFriendsTable(){
+		var rows = friendsTable.getElementsByTagName("tr");
+		for (i = 0; i < rows.length; i++) {
+			 document.getElementById("friendsTable").deleteRow(i+1);
+		}
 	}
 
 	function createFriendsTable() {
