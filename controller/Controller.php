@@ -219,12 +219,11 @@ class Controller {
   		WHERE friends.userid='".$myId."' AND user.id=friends.friendid";
   	$getFriendsResult = $connection->query($getFriends);
   	$friendsArray = array();
-    $row_array['id'] = '2';
-    $row_array['username'] = 'szabi';
-    array_push($friendsArray,$row_array);
-    $row_array['id'] = '3';
-    $row_array['username'] = 'andrea';
-    array_push($friendsArray,$row_array);
+  	foreach ($getFriendsResult as $friend) {
+    	$row_array['id'] = $friend['id'];
+    	$row_array['username'] = $friend['username'];
+   		array_push($friendsArray,$row_array);
+	}
   	return new JsonResponse($friendsArray);
   }
   
