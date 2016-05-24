@@ -352,7 +352,8 @@ function webRTC() {
 		var dataArray = decode(event.data);
 		var message = dataArray[1];
 		var peerUsername = getPeerUsername(dataArray);
-		dataChannelReceive.value += peerUsername + ": " + message + "\n";
+		var date = getCurrentTime();
+		dataChannelReceive.value +=  "[" + date + "] "+peerUsername + ": " + message + "\n";
 		saveConversation(peerUsername, message);
 	}
 
@@ -378,8 +379,17 @@ function webRTC() {
 		var data = dataChannelSend.value;
 		dataChannelSend.value = '';
 		var username = getMyUsername();
-		dataChannelReceive.value += username + ": " + data + "\n";
+		var date = getCurrentTime();
+		dataChannelReceive.value += "[" + date + "] "+username + ": " + data + "\n";
 		dataChannel.send(encode(username) + data);
+	}
+	
+	function getCurrentTime(){
+		var currentdate = new Date(); 
+		var time = currentdate.getHours() + ":"  
+		                + currentdate.getMinutes() + ":" 
+		                + currentdate.getSeconds();
+		return time;
 	}
 	
 	function addFriendByUser() {
