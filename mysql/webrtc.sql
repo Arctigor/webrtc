@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2016 at 10:59 PM
+-- Generation Time: May 24, 2016 at 08:21 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -42,7 +42,9 @@ INSERT INTO `friends` (`id`, `userid`, `friendid`) VALUES
 (3, 1, 3),
 (4, 3, 1),
 (5, 3, 4),
-(6, 4, 3);
+(6, 4, 3),
+(7, 2, 3),
+(8, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -54,49 +56,9 @@ CREATE TABLE `history` (
   `id` int(11) NOT NULL,
   `firstuser` varchar(40) NOT NULL,
   `seconduser` varchar(40) NOT NULL,
-  `message` text
+  `message` text,
+  `datetime` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `history`
---
-
-INSERT INTO `history` (`id`, `firstuser`, `seconduser`, `message`) VALUES
-(1, 'andrea', 'bene', 'heeeey darling'),
-(2, 'bene', 'andrea', 'heyz'),
-(3, 'szabi', 'bene', 'gfd'),
-(4, 'bene', 'szabi', 'gfd'),
-(5, 'szabi', 'bene', 'fds'),
-(6, 'bene', 'szabi', 'fds'),
-(7, 'szabi', 'bene', 'sdf'),
-(8, 'bene', 'szabi', 'aaasdf'),
-(9, 'szabi', 'bene', 'hjk'),
-(10, 'bene', 'szabi', 'hbhj'),
-(11, 'szabi', 'bene', 'tre'),
-(12, 'bene', 'szabi', 'fffw'),
-(13, 'szabi', 'bene', 'gfdg'),
-(14, 'szabi', 'bene', 'gfds'),
-(15, 'bene', 'szabi', 'cds'),
-(16, 'szabi', 'bene', 'zxcvxcv'),
-(17, 'bene', 'szabi', ''),
-(18, 'szabi', 'bene', 'gdf'),
-(19, 'szabi', 'bene', 'dgf'),
-(20, 'bene', 'szabi', 'fgdf'),
-(21, 'szabi', 'bene', 'gds'),
-(22, 'bene', 'szabi', 'gfds'),
-(23, 'szabi', 'bene', 'fdas'),
-(24, 'bene', 'szabi', 'dfaasa'),
-(25, 'szabi', 'bene', 'sasdf'),
-(26, 'bene', 'szabi', 'fdsa'),
-(27, 'szabi', 'bene', 'fds'),
-(28, 'bene', 'szabi', 'gfs'),
-(29, 'szabi', 'bene', 'tds'),
-(30, 'bene', 'szabi', 'gs'),
-(31, 'szabi', 'bene', 'gfsg'),
-(32, 'bene', 'szabi', 'gfds'),
-(33, 'szabi', 'bene', 'tret'),
-(34, 'bene', 'szabi', 'rewt'),
-(35, 'szabi', 'bene', 'fesg');
 
 -- --------------------------------------------------------
 
@@ -177,17 +139,17 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `friends`
 --
 ALTER TABLE `friends`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 --
 -- AUTO_INCREMENT for table `offers`
 --
 ALTER TABLE `offers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=410;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=420;
 --
 -- AUTO_INCREMENT for table `user`
 --

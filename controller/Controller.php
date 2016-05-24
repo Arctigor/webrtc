@@ -146,9 +146,10 @@ class Controller {
   	$offererUsername = $data['myUsername'];
   	$peerUsername = $data['peerUsername'];
   	$message = $data['message'];
+  	$currentDate = date('Y-m-d H:i:s');
   	
   	$connection = $this->getConnection();
-  	$insertHistory = "INSERT INTO history VALUES (0, '".$offererUsername."', '".$peerUsername."', '".$message."')";
+  	$insertHistory = "INSERT INTO history VALUES (0, '".$offererUsername."', '".$peerUsername."', '".$message."', '".$currentDate."')";
   	$connection->query($insertHistory); 
   }
   
