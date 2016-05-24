@@ -24,7 +24,7 @@ function webRTC() {
 	var friendsList;
 	var selectedFriend;
 	var receiveChannel;
-	var localStream;
+	var localStream=null;
 
 	RTCPeerConnection = window.mozRTCPeerConnection
 			|| window.webkitRTCPeerConnection;
@@ -58,7 +58,9 @@ function webRTC() {
 
 	function connect() {
 		localPeerConnection.onicecandidate = getIceCandidate;
-		localPeerConnection.addStream(localStream);
+		if(localStream != null){
+		  localPeerConnection.addStream(localStream);
+		}
 		localPeerConnection.createOffer(createOffer, errorHandler);
 	}
 	
@@ -94,7 +96,9 @@ function webRTC() {
 		var remoteSDP = new RTCSessionDescription();
 		remoteSDP.type = "offer";
 		remoteSDP.sdp = responseJSON.offerersdp;
-		remotePeerConnection.addStream(localStream);
+		if(localStream != null){
+			remotePeerConnection.addStream(localStream);
+		}
 		remotePeerConnection.onaddstream = gotRemoteStream;
 		remotePeerConnection.setRemoteDescription(remoteSDP);
 		remotePeerConnection.createAnswer(
@@ -265,7 +269,9 @@ function webRTC() {
 
 	function gotStream(stream) {
 		localVideo.src = URL.createObjectURL(stream);
-		localStream = stream;
+		if(stream){
+		  localStream = stream;
+		}
 		console.log('Stream: ');
 		console.log(stream);
 		console.log(localVideo.src);

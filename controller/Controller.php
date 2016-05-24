@@ -47,6 +47,7 @@ class Controller {
 		$loginResult = $connection->query($loginSql);
 		if($user){
 			$_SESSION['username'] = $_POST['username'];
+			$_SESSION['id'] = $user->id;
 			setcookie('id', $user->id, time() + (86400 * 30), "/"); 
 			setcookie('username', $_SESSION['username'], time() + (86400 * 30), "/"); 
 			header("Location: /welcome");
@@ -151,6 +152,33 @@ class Controller {
   	$connection = $this->getConnection();
   	$insertHistory = "INSERT INTO history VALUES (0, '".$offererUsername."', '".$peerUsername."', '".$message."', '".$currentDate."')";
   	$connection->query($insertHistory); 
+  }
+  
+  public function history(){
+     $data = $_GET;
+     $peerId = $data['peerId'];
+     $connection = $this->getConnection();
+     
+     if(isset($_SESSION['username']) && $peerId != null){
+       $currentUser = $_SESSION['username'];
+       $currentUserId = $_SESSION['id'];
+       $getFriendSql = "SELECT * FROM `friends` WHERE userid='".$currentUserId."' AND friendid='".$peerId."'";
+  	   $getFriendResult = $connection->query($getFriendSql);
+  	   $friend = $getFriendResult->fetch_object();
+  	   if($friend){
+  	     	$getUserSql = "SELECT * FROM `user` WHERE id='".$friend->friendid."' LIMIT 1";
+  	        $getUserResult = $connection->query($getUserSql);
+  	        $user = $getUserResult->fetch_object();
+  	        $getHistorySql = "SELECT * FROM `history` WHERE (firstuser='".$user->username."' AND seconduser='".$currentUser.
+  			"') OR ( firstuser='".$currentUser."' AND seconduser='".$user->username."')";
+  	
+  			$getHistoryResult = $connection->query($getHistorySql);
+  			foreach ($getHistoryResult as $history) {
+  				$conversation = "[".$history['datetime']."] ".$history['seconduser'].": ".$history['message']."<br>"; 
+    			print_r($conversation);
+			}
+  	   }
+     }
   }
   
   public function getOffer(){

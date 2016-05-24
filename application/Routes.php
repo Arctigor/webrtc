@@ -59,6 +59,10 @@ class Routes {
 					'controller' => 'addFriend',
 					'template' => 'addFriend',
 			),
+			'history' => array(
+					'controller' => 'history',
+					'template' => 'history',
+			),
 			'getOffer' => array(
 					'controller' => 'getOffer',
 					'template' => 'getOffer',
