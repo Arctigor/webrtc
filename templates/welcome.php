@@ -31,6 +31,7 @@
 	<table id="friendsTable"class="tg">
 		<tr>
 			<th class="tg-yw4l">Friends</th>
+			<th class="tg-yw4l">History</th>
 		</tr>
 	</table>
 

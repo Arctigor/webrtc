@@ -24,7 +24,7 @@ function webRTC() {
 	var friendsList;
 	var selectedFriend;
 	var receiveChannel;
-	var localStream=null;
+	var localStream = null;
 
 	RTCPeerConnection = window.mozRTCPeerConnection
 			|| window.webkitRTCPeerConnection;
@@ -33,14 +33,14 @@ function webRTC() {
 			|| window.RTCSessionDescription;
 
 	createFriendsTable();
-	
+
 	var checkDb = 5000; // milliseconds
 	setInterval(waitingForOffer, checkDb);
 	setInterval(waitingForAnswer, checkDb);
 	setInterval(waitingForCandidate, checkDb);
 
 	startButton.disabled = false;
-	
+
 	startButton.onclick = createConnection;
 	addFriendButton.onclick = addFriendByUser;
 	sendButton.onclick = sendData;
@@ -58,12 +58,12 @@ function webRTC() {
 
 	function connect() {
 		localPeerConnection.onicecandidate = getIceCandidate;
-		if(localStream != null){
-		  localPeerConnection.addStream(localStream);
+		if (localStream != null) {
+			localPeerConnection.addStream(localStream);
 		}
 		localPeerConnection.createOffer(createOffer, errorHandler);
 	}
-	
+
 	function createOffer(sessionDescriptionProtocol) {
 		localPeerConnection.createOffer(
 				function(sessionDescriptionProtocol) {
@@ -81,7 +81,7 @@ function webRTC() {
 					console.log(localPeerConnection);
 				}, errorHandler);
 	}
-	
+
 	function createAnswer(responseJSON) {
 		remotePeerConnection = new RTCPeerConnection(null);
 		createDataChannel();
@@ -89,33 +89,32 @@ function webRTC() {
 		setTimeout(function() {
 			connectRemote(responseJSON);
 		}, 2000);
-		
+
 	}
 
-	function connectRemote(responseJSON){
+	function connectRemote(responseJSON) {
 		var remoteSDP = new RTCSessionDescription();
 		remoteSDP.type = "offer";
 		remoteSDP.sdp = responseJSON.offerersdp;
-		if(localStream != null){
+		if (localStream != null) {
 			remotePeerConnection.addStream(localStream);
 		}
 		remotePeerConnection.onaddstream = gotRemoteStream;
 		remotePeerConnection.setRemoteDescription(remoteSDP);
-		remotePeerConnection.createAnswer(
-				function(sessionDescriptionProtocol) {
-					remotePeerConnection
-							.setLocalDescription(sessionDescriptionProtocol);
-					var myId = getMyId();
-					var peerId = responseJSON.offererid;
-					answerJSON = {
-						myId : myId,
-						peerId : peerId,
-						type : "answer",
-						data : sessionDescriptionProtocol.sdp
-					};
-					console.log(remotePeerConnection);
-					insertDataToDb(answerJSON, "/insertAnswer");
-				}, errorHandler);
+		remotePeerConnection.createAnswer(function(sessionDescriptionProtocol) {
+			remotePeerConnection
+					.setLocalDescription(sessionDescriptionProtocol);
+			var myId = getMyId();
+			var peerId = responseJSON.offererid;
+			answerJSON = {
+				myId : myId,
+				peerId : peerId,
+				type : "answer",
+				data : sessionDescriptionProtocol.sdp
+			};
+			console.log(remotePeerConnection);
+			insertDataToDb(answerJSON, "/insertAnswer");
+		}, errorHandler);
 	}
 
 	function insertDataToDb(offerJSON, url) {
@@ -178,7 +177,7 @@ function webRTC() {
 				remotePeerConnection.addIceCandidate(iceCandidate);
 				console.log(remotePeerConnection);
 				answeredConnection = false;
-		//		console.log("Offerer Stream");
+				// console.log("Offerer Stream");
 				completeConnection(responseJSON);
 			}
 		}
@@ -269,8 +268,8 @@ function webRTC() {
 
 	function gotStream(stream) {
 		localVideo.src = URL.createObjectURL(stream);
-		if(stream){
-		  localStream = stream;
+		if (stream) {
+			localStream = stream;
 		}
 		console.log('Stream: ');
 		console.log(stream);
@@ -302,7 +301,7 @@ function webRTC() {
 		});
 		return responseJSON;
 	}
-	
+
 	function addFriendsByUsername(username) {
 		var myId = getMyId();
 		var responseJSON = null;
@@ -321,7 +320,7 @@ function webRTC() {
 		});
 		return responseJSON;
 	}
-	
+
 	function saveConversation(peerUsername, data) {
 		var myUsername = getMyUsername();
 		convJSON = {
@@ -359,7 +358,8 @@ function webRTC() {
 		var message = dataArray[1];
 		var peerUsername = getPeerUsername(dataArray);
 		var date = getCurrentTime();
-		dataChannelReceive.value +=  "[" + date + "] "+peerUsername + ": " + message + "\n";
+		dataChannelReceive.value += "[" + date + "] " + peerUsername + ": "
+				+ message + "\n";
 		saveConversation(peerUsername, message);
 	}
 
@@ -386,33 +386,34 @@ function webRTC() {
 		dataChannelSend.value = '';
 		var username = getMyUsername();
 		var date = getCurrentTime();
-		dataChannelReceive.value += "[" + date + "] "+username + ": " + data + "\n";
+		dataChannelReceive.value += "[" + date + "] " + username + ": " + data
+				+ "\n";
 		dataChannel.send(encode(username) + data);
 	}
-	
-	function getCurrentTime(){
-		var currentdate = new Date(); 
-		var time = currentdate.getHours() + ":"  
-		                + currentdate.getMinutes() + ":" 
-		                + currentdate.getSeconds();
+
+	function getCurrentTime() {
+		var currentdate = new Date();
+		var time = currentdate.getHours() + ":" + currentdate.getMinutes()
+				+ ":" + currentdate.getSeconds();
 		return time;
 	}
-	
+
 	function addFriendByUser() {
 		var responseJSON = addFriendsByUsername(addFriendTextBox.value);
 		if (responseJSON.result == "success") {
 			deleteFriendsTable();
 			createFriendsTable();
 		} else {
-			alert("User "+addFriendTextBox.value+" doesn't not exist or is already in your friend list");
+			alert("User " + addFriendTextBox.value
+					+ " doesn't not exist or is already in your friend list");
 		}
 		addFriendTextBox.value = "";
 	}
-	
-	function deleteFriendsTable(){
+
+	function deleteFriendsTable() {
 		var rows = friendsTable.getElementsByTagName("tr");
 		for (i = 0; i < rows.length; i++) {
-			 document.getElementById("friendsTable").deleteRow(i+1);
+			document.getElementById("friendsTable").deleteRow(i + 1);
 		}
 	}
 
@@ -428,32 +429,43 @@ function webRTC() {
 	function populateTable() {
 		$.each(friendsList, function(key, value) {
 			var row = friendsTable.insertRow(-1);
-			var cell = row.insertCell(0);
-			cell.innerHTML = value.username;
+			var userCell = row.insertCell(0);
+			userCell.innerHTML = value.username;
+			var historyCell = row.insertCell(1);
+			historyCell.innerHTML = "View Conversation";
 		});
 	}
 
 	function addRowHandlers() {
 		var rows = friendsTable.getElementsByTagName("tr");
 		for (i = 0; i < rows.length; i++) {
-			var currentRow = friendsTable.rows[i];
-			var createClickHandler = function(row) {
-				return function() {
-					var cell = row.getElementsByTagName("td")[0];
-					var id = cell.innerHTML;
-					if (!offerer) {
-						$.each(friendsList, function(key, value) {
-							if (value.username == id) {
-								selectedFriend = value;
-								peerId = selectedFriend.id;
+			for ( var j = 0; j < friendsTable.rows[i].cells.length; j++) {
+				var currentRow = friendsTable.rows[i];
+				var createClickHandler = function(cell, row) {
+					return function() {
+						var cellValue = cell.innerHTML;
+						if (!offerer) {
+							$.each(friendsList, function(key, value) {
+								if (value.username == cellValue) {
+									selectedFriend = value;
+									peerId = selectedFriend.id;
+								}
+							});
+							if (cellValue == "View Conversation") {
+								viewHistory(friendsList[row - 1]);
 							}
-						});
-					}
+						}
+					};
 				};
-			};
-
-			currentRow.onclick = createClickHandler(currentRow);
+				friendsTable.rows[i].cells[j].onclick = createClickHandler(
+						friendsTable.rows[i].cells[j], i);
+			}
 		}
+	}
+
+	function viewHistory(friend) {
+		var peerId = friend.id;
+		window.open("/history/?peerId="+peerId+"");
 	}
 
 	function encode(username) {
