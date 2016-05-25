@@ -1,0 +1,32 @@
+services:
+  route_collector:
+    class: 'Simplex\Service\RouteCollector'
+  context:
+    class: 'Symfony\Component\Routing\RequestContext'
+  request_stack:
+    class: 'Symfony\Component\HttpFoundation\RequestStack'
+  resolver:
+    class: 'Simplex\Controller\SimplexControllerResolver'
+    calls:
+      - ['setContainer', ['@service_container']]
+  listener.router:
+    class: 'Symfony\Component\HttpKernel\EventListener\RouterListener'
+    arguments: ['@matcher', '@request_stack']
+  'listener.response':
+    class: 'Symfony\Component\HttpKernel\EventListener\ResponseListener'
+    arguments: ['UTF-8']
+  listener.exception:
+    class: 'Symfony\Component\HttpKernel\EventListener\ExceptionListener'
+    arguments: ['Simplex\Controller\ErrorController::exceptionAction']
+  listener.string_response:
+    class: 'Simplex\EventListener\StringResponseListener'
+  dispatcher:
+    class: 'Symfony\Component\EventDispatcher\EventDispatcher'
+    calls:
+      - ['addSubscriber', ['@listener.router']]
+      - ['addSubscriber', ['@listener.response']]
+      - ['addSubscriber', ['@listener.exception']]
+      - ['addSubscriber', ['@listener.string_response']]
+  http_kernel:
+    class: 'Symfony\Component\HttpKernel\HttpKernel'
+    arguments: ['@dispatcher', '@resolver']

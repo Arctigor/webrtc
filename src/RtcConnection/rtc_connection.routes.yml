@@ -1,0 +1,51 @@
+insertOffer:
+  path: '/insertOffer'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::insertOffer'
+
+insertAnswer:
+  path: '/insertOffer'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::insertAnswer'
+
+
+insertCandidate:
+  path: '/insertOffer'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::insertCandidate'
+
+insertConversation:
+  path: '/insertConversation'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::insertConversation'
+
+addFriend:
+  path: '/addFriend'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::addFriend'
+
+getOffer:
+  path: '/getOffer'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::getOffer'
+
+getAnswer:
+  path: '/getAnswer'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::getAnswer'
+
+
+getCandidate:
+  path: '/getCandidate'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::getCandidate'
+
+completeConnection:
+  path: '/completeConnection'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::completeConnection'
+
+getFriends:
+  path: '/getFriends'
+  defaults:
+    _controller: 'Simplex\RtcConnection\Controller\ConnectionController::getFriends'

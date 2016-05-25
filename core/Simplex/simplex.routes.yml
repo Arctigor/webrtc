@@ -1,0 +1,10 @@
+hello:
+  path: '/hello/{name}'
+  defaults:
+    name: 'World'
+    _controller: 'render_template'
+
+bye:
+  path: '/bye'
+  defaults:
+    _controller: 'render_template'

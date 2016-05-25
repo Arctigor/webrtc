@@ -1,0 +1,4 @@
+home:
+  path: '/'
+  defaults:
+    _controller: 'Simplex\Home\Controller\HomeController::homeAction'

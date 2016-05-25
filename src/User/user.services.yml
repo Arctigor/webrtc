@@ -1,0 +1,6 @@
+services:
+  user.validate:
+    class: 'Simplex\User\Service\ValidateUser'
+  user.model:
+    class: 'Simplex\User\Model\UserModel'
+    arguments: ['@user.validate']

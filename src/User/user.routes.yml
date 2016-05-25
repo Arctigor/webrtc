@@ -1,0 +1,24 @@
+welcome_page:
+  path: '/welcome'
+  defaults:
+    _controller: 'Simplex\User\Controller\UserController::welcomePage'
+
+login_page:
+  path: '/login'
+  defaults:
+    _controller: 'Simplex\User\Controller\UserController::loginPage'
+
+register_page:
+  path: '/register'
+  defaults:
+    _controller: 'Simplex\User\Controller\UserController::registerPage'
+
+register_action:
+  path: '/formRegister'
+  defaults:
+    _controller: 'Simplex\User\Controller\UserController::formRegister'
+
+login_action:
+  path: '/formLogin'
+  defaults:
+    _controller: 'Simplex\User\Controller\UserController::formLogin'
