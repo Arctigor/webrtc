@@ -70,7 +70,7 @@ class UserController extends ControllerBase {
       '#label' => 'Password'
     );
 
-    $form[' confirm-password'] = array(
+    $form['confirm-password'] = array(
       '#type' => 'password',
       '#placeholder' => 'Enter your password',
       '#label' => 'Confirm Password'
