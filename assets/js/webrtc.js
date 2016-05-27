@@ -51,7 +51,7 @@ function webRTC() {
 	sendButton.onclick = sendData;
 	acceptButton.onclick = acceptConnection;
 	declineButton.onclick = declineConnection;
-
+	
 	function createConnection() {
 		localPeerConnection = new RTCPeerConnection(servers); // eslint-disable-line
 		startcall = true;
@@ -139,7 +139,6 @@ function webRTC() {
 				var responseJSON = getOfferFromDb();
 				if (responseJSON != null) {
 					showIncomingConnection(responseJSON);
-		//			createAnswer(responseJSON);
 				}
 			}
 		}
@@ -265,6 +264,7 @@ function webRTC() {
 		answeredConnection = false;
 		insertDataToDb(myDataJSON, "/completeConnection");
 	}
+	
 	function setLocalMedia() {
 		navigator.getUserMedia = navigator.getUserMedia
 				|| navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -487,6 +487,8 @@ function webRTC() {
 	
 	function acceptConnection(){
 		answeredConnection = true;
+		createAnswer(incomingOfferJSON);
+		hideIncomingConnectionElements();
 	}
 	
 	function declineConnection(){
