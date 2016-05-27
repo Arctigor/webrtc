@@ -225,15 +225,16 @@ class Controller {
   	$data = $_POST;
   	$answererId = $data['myId'];
   	$offererId = $data['offererId'];
+  	$status = $data['status'];
   	
   	$connection = $this->getConnection();
   	$getOfferSql = "SELECT * FROM `offers` WHERE answererid='".$answererId."' AND offererid='".$offererId.
-  	"' AND status='candidate' ORDER BY updatedtime DESC LIMIT 1";
+  	"' AND status='candidate' OR status='offer' ORDER BY updatedtime DESC LIMIT 1";
   	
   	$getOfferResult = $connection->query($getOfferSql);
   	$offer = $getOfferResult->fetch_object();
     if($offer){
-  		$updateOfferSql = "UPDATE offers SET status='complete' WHERE id='".$offer->id."'";
+  		$updateOfferSql = "UPDATE offers SET status='".$status."' WHERE id='".$offer->id."'";
   		$connection->query($updateOfferSql);
   	}
   }

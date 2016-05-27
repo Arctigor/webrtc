@@ -13,6 +13,8 @@ function webRTC() {
 	var peerId = null;
 	var startButton = document.getElementById('startButton');
 	var sendButton = document.getElementById('sendButton');
+	var acceptButton = document.getElementById('acceptButton');
+	var declineButton = document.getElementById('declineButton');
 	var dataChannelSend = document.getElementById('dataChannelSend');
 	var dataChannelReceive = document.getElementById('dataChannelReceive');
 	var localVideo = document.getElementById('localVideo');
@@ -20,7 +22,9 @@ function webRTC() {
 	var friendsTable = document.getElementById("friendsTable");
 	var addFriendButton = document.getElementById("addFriendButton");
 	var addFriendTextBox = document.getElementById("addFriendTextBox");
+	var incomingConnectionP = document.getElementById("connection");
 	var offerJSON;
+	var incomingOfferJSON;
 	var friendsList;
 	var selectedFriend;
 	var receiveChannel;
@@ -33,6 +37,7 @@ function webRTC() {
 			|| window.RTCSessionDescription;
 
 	createFriendsTable();
+	hideIncomingConnectionElements();
 
 	var checkDb = 5000; // milliseconds
 	setInterval(waitingForOffer, checkDb);
@@ -44,6 +49,8 @@ function webRTC() {
 	startButton.onclick = createConnection;
 	addFriendButton.onclick = addFriendByUser;
 	sendButton.onclick = sendData;
+	acceptButton.onclick = acceptConnection;
+	declineButton.onclick = declineConnection;
 
 	function createConnection() {
 		localPeerConnection = new RTCPeerConnection(servers); // eslint-disable-line
@@ -131,8 +138,8 @@ function webRTC() {
 			if (!offerer) {
 				var responseJSON = getOfferFromDb();
 				if (responseJSON != null) {
-					createAnswer(responseJSON);
-					answeredConnection = true;
+					showIncomingConnection(responseJSON);
+		//			createAnswer(responseJSON);
 				}
 			}
 		}
@@ -177,8 +184,7 @@ function webRTC() {
 				remotePeerConnection.addIceCandidate(iceCandidate);
 				console.log(remotePeerConnection);
 				answeredConnection = false;
-				// console.log("Offerer Stream");
-				completeConnection(responseJSON);
+				completeConnection(responseJSON, "complete");
 			}
 		}
 	}
@@ -249,12 +255,14 @@ function webRTC() {
 		}
 	}
 
-	function completeConnection(responseJSON) {
+	function completeConnection(responseJSON, status) {
 		var myId = getMyId();
 		myDataJSON = {
 			myId : myId,
 			offererId : responseJSON.offererid,
+			status : status
 		};
+		answeredConnection = false;
 		insertDataToDb(myDataJSON, "/completeConnection");
 	}
 	function setLocalMedia() {
@@ -466,6 +474,41 @@ function webRTC() {
 	function viewHistory(friend) {
 		var peerId = friend.id;
 		window.open("/history/?peerId="+peerId+"");
+	}
+	
+	function showIncomingConnection(responseJSON){
+		var username = getFriendById(responseJSON.offererid);;
+		$(incomingConnectionP).text("Incoming connection from: "+username);
+		$(acceptButton).show();
+		$(declineButton).show();
+		$(incomingConnectionP).show();
+		incomingOfferJSON = responseJSON;
+	}
+	
+	function acceptConnection(){
+		answeredConnection = true;
+	}
+	
+	function declineConnection(){
+		answeredConnection = true;
+		completeConnection(incomingOfferJSON, "decline");
+		hideIncomingConnectionElements();
+	}
+	
+	function hideIncomingConnectionElements(){
+		$(acceptButton).hide();
+		$(declineButton).hide();
+		$(incomingConnectionP).hide();
+	}
+	
+	function getFriendById(id){
+		var toRet = null
+		$.each(friendsList, function(key, value) {
+			if (value.id == id) {
+				toRet = value.username;
+			}
+		});
+		return toRet;
 	}
 
 	function encode(username) {

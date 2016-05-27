@@ -34,5 +34,10 @@
 			<th class="tg-yw4l">History</th>
 		</tr>
 	</table>
+	<p id="connection">Incoming connection from: </p>
+	<div id="buttons">
+		<button id="acceptButton">Accept</button>
+		<button id="declineButton">Decline</button>
+	</div>
 
 </div>
