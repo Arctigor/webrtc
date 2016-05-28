@@ -10,4 +10,10 @@
   <input type="password" name="confirm-password" placeholder="Enter your password"><br><br>
   <input type="submit" value="Register">
 </form>
+	<?php 	
+		if(isset($_SESSION['error']) && $_SESSION['error'] != ""){
+			print_r($_SESSION['error']);
+			$_SESSION['error'] = "";
+		}
+	?>
 </div>

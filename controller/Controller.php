@@ -34,7 +34,9 @@ class Controller {
   }
   
   public function register() {
-    return array();
+  	if(isset($_SESSION['error'])){
+  	  return $_SESSION['error'];
+  	}
   }
   
   public function formLogin() {
@@ -43,7 +45,8 @@ class Controller {
 	$userResult = $connection->query($userSql);
 	$user = $userResult->fetch_object();
 	if($user){
-		$loginSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "' AND " . "password='".$_POST['password']."'";
+		$pass = $this->encode($_POST['password']);
+		$loginSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "' AND " . "password='".$pass."'";
 		$loginResult = $connection->query($loginSql);
 		if($user){
 			$_SESSION['username'] = $_POST['username'];
@@ -65,16 +68,34 @@ class Controller {
   	$email = $_POST['email'];
   	$pass = $this->encode($_POST['password']);
   	$confPass = $this->encode($_POST['confirm-password']);
-  	if($this->validatePassword($pass, $confPass)){
-  		if($this->validateUsername($username)){
-  			if($this->validateEmail($email)){
-  				$registerSql = "INSERT INTO user VALUES (0, '".$username."', '".$pass."', '".$email."', 0)";
-  				$registerResult = $connection->query($registerSql);
-  			//	header("Location: /");	
+  	
+  	$connection = $this->getConnection();
+  	$userSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "'";
+	$userResult = $connection->query($userSql);
+	$user = $userResult->fetch_object();
+	var_dump($user);
+	
+	$errorMessage = "";
+	
+	if($this->areTextFieldsEmpty($username, $email, $pass, $confPass) == false){
+  		if($this->validatePassword($pass, $confPass)){
+  			if($this->validateUsername($username, $user)){
+  				if($this->validateEmail($email)){
+  					$registerSql = "INSERT INTO user VALUES (0, '".$username."', '".$pass."', '".$email."', 0)";
+  					$registerResult = $connection->query($registerSql);
+  					$this->setSuccessMessage("User registered successfully!");
+  					return "";
+  				}
+  				$this->setErrorMessage("Invalid email format!");
+  				return "";
   			}
+  			return "";
   		}
-  	}
- 	 
+  		$this->setErrorMessage("Password and confirm password are not the same!");
+  		return "";
+  	} 
+  	$this->setErrorMessage("Fill in the fields!");
+  	return "";
   }
   
   public function insertOffer() {
@@ -285,19 +306,39 @@ class Controller {
   	return new JsonResponse($friendsArray);
   }
   
-  private function validatePassword($pass, $confPass){
-    //TODO: insert validation
-  	return true;
+  private function areTextFieldsEmpty($username, $email, $pass, $confPass){
+  	return $username == "" || $email == "" || $pass == "" || $confPass == "";
+  }
+ 
+  private function setErrorMessage($message){
+  	$_SESSION['error'] = $message;
+  	header("Location: /register");
   }
   
-  private function validateUsername($username){
-    //TODO: insert validation
-	return true;
+  private function setSuccessMessage($message){
+  	$_SESSION['success'] = $message;
+  	header("Location: /home");
+  }
+  
+  private function validatePassword($pass, $confPass){
+    return $pass == $confPass;
+  }
+  
+  private function validateUsername($username, $dbUser){
+  	$toRet = true;
+  	if ($dbUser != null){
+  		$this->setErrorMessage("Username already exists!");
+  		$toRet = false;
+  	}
+  	if(strpos($username, ' ') !== false) {
+  		$this->setErrorMessage("Username should not contain space characters!");
+  		$toRet = false;
+  	}
+	return $toRet;
   }
 	
   private function validateEmail($email){
-    //TODO: insert validation
-  	return true;
+  	return filter_var($email, FILTER_VALIDATE_EMAIL);
   }
   
   private function encode($password){
