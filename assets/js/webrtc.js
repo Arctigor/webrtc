@@ -22,6 +22,7 @@ function webRTC() {
 	var friendsTable = document.getElementById("friendsTable");
 	var addFriendButton = document.getElementById("addFriendButton");
 	var addFriendTextBox = document.getElementById("addFriendTextBox");
+	var connectToFBButton = document.getElementById("connect_to_fb");
 	var incomingConnectionP = document.getElementById("connection");
 	var offerJSON;
 	var incomingOfferJSON;
@@ -38,6 +39,7 @@ function webRTC() {
 
 	createFriendsTable();
 	hideIncomingConnectionElements();
+	hideConnectToFbIfConnected();
 
 	var checkDb = 5000; // milliseconds
 	setInterval(waitingForOffer, checkDb);
@@ -51,6 +53,7 @@ function webRTC() {
 	sendButton.onclick = sendData;
 	acceptButton.onclick = acceptConnection;
 	declineButton.onclick = declineConnection;
+	connectToFBButton.onclick = connectToFacebook;
 	
 	function createConnection() {
 		localPeerConnection = new RTCPeerConnection(servers); // eslint-disable-line
@@ -502,6 +505,59 @@ function webRTC() {
 		$(declineButton).hide();
 		$(incomingConnectionP).hide();
 	}
+	
+	function getUserFb(){
+		var myId = getMyId();
+		var responseJSON = null;
+		myDataJSON = {
+			myId : myId
+		};
+		$.ajax({
+			data : myDataJSON,
+			type : "post",
+			url : "/getUserFb",
+			async : false,
+			success : function(response) {
+				responseJSON = response;
+			}
+		});
+		return responseJSON;
+	}
+	
+	function hideConnectToFbIfConnected(){
+		var userFbId = getUserFb();
+		if(userFbId.fbid != ""){
+			$(connectToFBButton).hide();
+		}
+	}
+	
+	function connectToFacebook(){
+		FB.getLoginStatus(function(response) {
+		      if (response.status == 'connected') {
+		        connectUser(response)
+		      } else {
+		        FB.login(function(response) {
+		          if (response.authResponse){
+		        	  connectUser(response)
+		          } else {
+		            console.log('Auth cancelled.')
+		          }
+		        }, { scope: 'email' });
+		      }
+		    });
+		$(connectToFBButton).hide();
+	}
+	
+	function connectUser() {
+	      FB.api('/me', function(userInfo) {
+	  		var myId = getMyId();
+			dataJSON = {
+				myId : myId,
+				data : userInfo.id
+			};
+			insertDataToDb(dataJSON, "/connectToFb");
+	      });
+	    }
 	
 	function getFriendById(id){
 		var toRet = null

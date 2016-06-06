@@ -36,6 +36,7 @@ class Routes {
 					'js' => array(
 							'/assets/js/jquery-2.2.1.min.js',
 							'/assets/js/webrtc.js',
+							'/assets/js/facebook.js',
 							//'/assets/js/text_chat.js',
 					),
 			),
@@ -67,6 +68,10 @@ class Routes {
 					'controller' => 'getOffer',
 					'template' => 'getOffer',
 			),
+			'getUserFb' => array(
+					'controller' => 'getUserFb',
+					'template' => 'getUserFb',
+			),
 			'getAnswer' => array(
 					'controller' => 'getAnswer',
 					'template' => 'getAnswer',
@@ -78,6 +83,10 @@ class Routes {
 			'completeConnection' => array(
 					'controller' => 'completeConnection',
 					'template' => 'completeConnection',
+			),
+			'connectToFb' => array(
+					'controller' => 'connectToFb',
+					'template' => 'connectToFb',
 			),
 			'getFriends' => array(
 					'controller' => 'getFriends',

@@ -215,6 +215,21 @@ class Controller {
   	return new JsonResponse($offer);
   }
   
+  public function getUserFb(){
+  	$data = $_POST;
+  	$userId = $data['myId'];
+  	 
+  	$connection = $this->getConnection();
+  	$getUserSql = "SELECT * FROM `user` WHERE id='".$userId."' LIMIT 1";
+  	$getUserResult = $connection->query($getUserSql);
+  	$user = $getUserResult->fetch_object();
+  	
+  	$arrayFb = array();
+  	$arrayFb["fbid"] = $user->facebookid;
+  	
+  	return new JsonResponse($arrayFb);
+  }
+  
   public function getAnswer(){
   	$data = $_POST;
   	$offererId = $data['myId'];
@@ -258,6 +273,17 @@ class Controller {
   		$updateOfferSql = "UPDATE offers SET status='".$status."' WHERE id='".$offer->id."'";
   		$connection->query($updateOfferSql);
   	}
+  }
+  
+  public function connectToFb(){
+  	$data = $_POST;
+  	$myId = $data['myId'];
+  	$fbid = $data['data'];
+  	
+  	$connection = $this->getConnection();
+  	
+  	$updateOfferSql = "UPDATE user SET facebookid='".$fbid."' WHERE id='".$myId."'";
+  	$connection->query($updateOfferSql);
   }
   
   public function addFriend(){

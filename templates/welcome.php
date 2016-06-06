@@ -39,5 +39,9 @@
 		<button id="acceptButton">Accept</button>
 		<button id="declineButton">Decline</button>
 	</div>
+	<br>
+	<div id="buttons">
+		<button id="connect_to_fb">Connect to your FB</button>
+	</div>
 
 </div>

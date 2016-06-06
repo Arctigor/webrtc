@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2016 at 08:21 PM
+-- Generation Time: Jun 06, 2016 at 10:02 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -87,7 +87,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `mail` varchar(100) NOT NULL,
+  `facebookid` varchar(100) NOT NULL,
   `isonline` int(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -95,11 +95,11 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `password`, `mail`, `isonline`) VALUES
-(1, 'bene', '1234', 'mbsz3@yahoo.com', 0),
-(2, 'szabi', '1234', 'mbsz2@yahoo.com', 0),
-(3, 'andrea', '1234', 'a.a.solomon@yahoo.com', 0),
-(4, 'leut puternic', 'leut', 'leut_puternic@yahoo.com', 0);
+INSERT INTO `user` (`id`, `username`, `password`, `facebookid`, `isonline`) VALUES
+(1, 'bene', '1234', '1197705283573366', 0),
+(2, 'szabi', '1234', '', 0),
+(3, 'andrea', '1234', '', 0),
+(4, 'leut puternic', 'leut', '', 0);
 
 --
 -- Indexes for dumped tables
@@ -128,8 +128,7 @@ ALTER TABLE `offers`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `mail` (`mail`);
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
