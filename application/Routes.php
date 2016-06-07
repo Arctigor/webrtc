@@ -13,6 +13,16 @@ class Routes {
 			'login' => array(
 					'controller' => 'login',
 					'template' => 'login',
+					
+			),
+			'loginWithFb' => array(
+					'controller' => 'loginWithFb',
+					'template' => 'loginWithFb',
+					'js' => array(
+							'/assets/js/jquery-2.2.1.min.js',
+							'/assets/js/facebook.js',
+							'/assets/js/login_with_fb.js'
+					),
 			),
 			'formLogin' => array(
 					'controller' => 'formLogin',

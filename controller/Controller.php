@@ -26,6 +26,10 @@ class Controller {
     return array();
   }
   
+  public function loginWithFb(){
+  	return array();
+  }
+  
   public function logout(){
   	$this->unsetCookie('id');
   	$this->unsetCookie('username');
@@ -41,25 +45,53 @@ class Controller {
   
   public function formLogin() {
   	$connection = $this->getConnection();
-	$userSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "'";
-	$userResult = $connection->query($userSql);
-	$user = $userResult->fetch_object();
-	if($user){
-		$pass = $this->encode($_POST['password']);
-		$loginSql = "SELECT * FROM `user` WHERE username="."'" . $_POST['username'] . "' AND " . "password='".$pass."'";
-		$loginResult = $connection->query($loginSql);
+  	$data = $_POST;
+  	$username = "";
+  	$password = "";
+  	if(isset($data['fbId'])){
+  		$userSql = "SELECT * FROM `user` WHERE facebookid="."'" . $data['fbId'] . "'";
+		$userResult = $connection->query($userSql);
+		$user = $userResult->fetch_object();
 		if($user){
-			$_SESSION['username'] = $_POST['username'];
-			$_SESSION['id'] = $user->id;
-			setcookie('id', $user->id, time() + (86400 * 30), "/"); 
-			setcookie('username', $_SESSION['username'], time() + (86400 * 30), "/"); 
-			header("Location: /welcome");
+			$username = $user->username;
+			$password = $user->password;
+			$this->loginWith($username, $password, false);
 		} else {
-			print_r("Wrong username or password");
+			$this->setSuccessMessage("Fb account is not connected to any registered account!");
 		}
-	} else {
-			print_r("Wrong username or password");
-	}
+  	} else{
+  		$username = $_POST['username'];
+  		$password = $_POST['password'];
+  		$this->loginWith($username, $password, true);
+  		
+  	}
+  }
+  
+  public function loginWith($username, $password, $encoding){
+  	$connection = $this->getConnection();
+  	$userSql = "SELECT * FROM `user` WHERE username="."'" . $username . "'";
+  	$userResult = $connection->query($userSql);
+  	$user = $userResult->fetch_object();
+  	if($user){
+  		if($encoding){
+  		$pass = $this->encode($password);
+  		} else {
+  			$pass = $password;
+  		}
+  		$loginSql = "SELECT * FROM `user` WHERE username="."'" . $username . "' AND " . "password='".$pass."'";
+  		$loginResult = $connection->query($loginSql);
+  		if($user){
+  			$_SESSION['username'] = $username;
+  			$_SESSION['id'] = $user->id;
+  			setcookie('id', $user->id, time() + (86400 * 30), "/");
+  			setcookie('username', $_SESSION['username'], time() + (86400 * 30), "/");
+  			header("Location: /welcome");
+  		} else {
+  			print_r("Wrong username or password");
+  		}
+  	} else {
+  		print_r("Wrong username or password");
+  	}
   }
   
   public function formRegister() {
