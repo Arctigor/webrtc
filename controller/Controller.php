@@ -55,15 +55,18 @@ class Controller {
 		if($user){
 			$username = $user->username;
 			$password = $user->password;
-			$this->loginWith($username, $password, false);
+			return $this->loginWith($username, $password, false);
 		} else {
 			$this->setSuccessMessage("Fb account is not connected to any registered account!");
 		}
-  	} else{
+  	} else if(isset($_POST['username']) || isset($_POST['password'])){
   		$username = $_POST['username'];
   		$password = $_POST['password'];
   		$this->loginWith($username, $password, true);
-  		
+  	} else{
+  		$arrayLogin = array();
+  		$arrayLogin["success"] = "false";
+  		return new JsonResponse($arrayLogin);
   	}
   }
   
@@ -80,12 +83,19 @@ class Controller {
   		}
   		$loginSql = "SELECT * FROM `user` WHERE username="."'" . $username . "' AND " . "password='".$pass."'";
   		$loginResult = $connection->query($loginSql);
-  		if($user){
+  		$login = $loginResult->fetch_object();
+  		if($login){
   			$_SESSION['username'] = $username;
   			$_SESSION['id'] = $user->id;
   			setcookie('id', $user->id, time() + (86400 * 30), "/");
   			setcookie('username', $_SESSION['username'], time() + (86400 * 30), "/");
-  			header("Location: /welcome");
+  			if($encoding){
+  				header("Location: /welcome");
+  			} else{
+  				$arrayLogin = array();
+  				$arrayLogin["success"] = "true";
+  				return new JsonResponse($arrayLogin);
+  			}
   		} else {
   			print_r("Wrong username or password");
   		}
@@ -362,6 +372,10 @@ class Controller {
    		array_push($friendsArray,$row_array);
 	}
   	return new JsonResponse($friendsArray);
+  }
+  
+  public function fbError(){
+  	return array();
   }
   
   private function areTextFieldsEmpty($username, $email, $pass, $confPass){

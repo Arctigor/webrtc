@@ -19,6 +19,11 @@ function login(){
 			async : false,
 			success : function(response) {
 				responseJSON = response;
+				if(response.success == "true"){
+					window.location = "/welcome";
+				} else{
+					window.location = "/fbError";
+				}
 			}
 		});
 		return responseJSON;

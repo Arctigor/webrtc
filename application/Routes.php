@@ -28,6 +28,10 @@ class Routes {
 					'controller' => 'formLogin',
 					'template' => 'formLogin',
 			),
+			'fbError' => array(
+					'controller' => 'fbError',
+					'template' => 'fbError',
+			),
 			'formRegister' => array(
 					'controller' => 'formRegister',
 					'template' => 'formRegister',

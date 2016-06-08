@@ -535,17 +535,20 @@ function webRTC() {
 		FB.getLoginStatus(function(response) {
 		      if (response.status == 'connected') {
 		        connectUser(response)
+		        $(connectToFBButton).hide();
+		        alert('User successfully connected to FB account');
 		      } else {
 		        FB.login(function(response) {
 		          if (response.authResponse){
 		        	  connectUser(response)
+		        	  $(connectToFBButton).hide();
+		        	  alert('User successfully connected to FB account');
 		          } else {
-		            console.log('Auth cancelled.')
+		            alert('Authentication failed');
 		          }
 		        }, { scope: 'email' });
 		      }
 		    });
-		$(connectToFBButton).hide();
 	}
 	
 	function connectUser() {
