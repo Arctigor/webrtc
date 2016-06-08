@@ -43,5 +43,26 @@
 	<div id="buttons">
 		<button id="connect_to_fb">Connect to your FB</button>
 	</div>
+	<br>
+	<section>
+      <form id="fileInfo">
+        <input type="file" id="fileInput" name="files"/>
+      </form>
+
+      <div class="progress">
+        <div class="label">Send progress: </div>
+        <progress id="sendProgress" max="0" value="0"></progress>
+      </div>
+
+      <div class="progress">
+        <div class="label">Receive progress: </div>
+        <progress id="receiveProgress" max="0" value="0"></progress>
+      </div>
+
+      <div id="bitrate"></div>
+      <a id="download"></a>
+      <span id="status"></span>
+
+    </section>
 
 </div>
