@@ -46,23 +46,10 @@
 	<br>
 	<section>
       <form id="fileInfo">
-        <input type="file" id="fileInput" name="files"/>
+        <input type="file" id="fileInput" name="files"/><br>
       </form>
-
-      <div class="progress">
-        <div class="label">Send progress: </div>
-        <progress id="sendProgress" max="0" value="0"></progress>
-      </div>
-
-      <div class="progress">
-        <div class="label">Receive progress: </div>
-        <progress id="receiveProgress" max="0" value="0"></progress>
-      </div>
-
-      <div id="bitrate"></div>
+      <button id="sendFileButton">Send File</button><br>
       <a id="download"></a>
-      <span id="status"></span>
-
     </section>
 
 </div>

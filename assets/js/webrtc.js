@@ -23,7 +23,9 @@ function webRTC() {
 	var addFriendButton = document.getElementById("addFriendButton");
 	var addFriendTextBox = document.getElementById("addFriendTextBox");
 	var connectToFBButton = document.getElementById("connect_to_fb");
+	var sendFileButton = document.getElementById("sendFileButton");
 	var incomingConnectionP = document.getElementById("connection");
+	var downloadAnchor = document.getElementById("download");
 	var offerJSON;
 	var incomingOfferJSON;
 	var friendsList;
@@ -54,7 +56,8 @@ function webRTC() {
 	acceptButton.onclick = acceptConnection;
 	declineButton.onclick = declineConnection;
 	connectToFBButton.onclick = connectToFacebook;
-	
+	sendFileButton.onclick = sendFile;
+
 	function createConnection() {
 		localPeerConnection = new RTCPeerConnection(servers); // eslint-disable-line
 		startcall = true;
@@ -267,7 +270,7 @@ function webRTC() {
 		answeredConnection = false;
 		insertDataToDb(myDataJSON, "/completeConnection");
 	}
-	
+
 	function setLocalMedia() {
 		navigator.getUserMedia = navigator.getUserMedia
 				|| navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -365,13 +368,24 @@ function webRTC() {
 	}
 
 	function eventDCMessage(event) {
-		var dataArray = decode(event.data);
-		var message = dataArray[1];
-		var peerUsername = getPeerUsername(dataArray);
-		var date = getCurrentTime();
-		dataChannelReceive.value += "[" + date + "] " + peerUsername + ": "
-				+ message + "\n";
-		saveConversation(peerUsername, message);
+		try {
+			var dataArray = decode(event.data);
+			var message = dataArray[1];
+			var peerUsername = getPeerUsername(dataArray);
+			var date = getCurrentTime();
+			dataChannelReceive.value += "[" + date + "] " + peerUsername + ": "
+					+ message + "\n";
+			saveConversation(peerUsername, message);
+		} catch (err) {
+			var receiveBuffer = [];
+			receiveBuffer.push(event.data);
+			var received = new window.Blob(receiveBuffer);
+		    receiveBuffer = [];
+			downloadAnchor.href = URL.createObjectURL(received);
+			downloadAnchor.download = getFileName();
+			downloadAnchor.textContent = 'Click to download file: ' + getFileName();
+			console.log("File");
+		}
 	}
 
 	function eventDCOpen() {
@@ -476,37 +490,38 @@ function webRTC() {
 
 	function viewHistory(friend) {
 		var peerId = friend.id;
-		window.open("/history/?peerId="+peerId+"");
+		window.open("/history/?peerId=" + peerId + "");
 	}
-	
-	function showIncomingConnection(responseJSON){
-		var username = getFriendById(responseJSON.offererid);;
-		$(incomingConnectionP).text("Incoming connection from: "+username);
+
+	function showIncomingConnection(responseJSON) {
+		var username = getFriendById(responseJSON.offererid);
+		;
+		$(incomingConnectionP).text("Incoming connection from: " + username);
 		$(acceptButton).show();
 		$(declineButton).show();
 		$(incomingConnectionP).show();
 		incomingOfferJSON = responseJSON;
 	}
-	
-	function acceptConnection(){
+
+	function acceptConnection() {
 		answeredConnection = true;
 		createAnswer(incomingOfferJSON);
 		hideIncomingConnectionElements();
 	}
-	
-	function declineConnection(){
+
+	function declineConnection() {
 		answeredConnection = true;
 		completeConnection(incomingOfferJSON, "decline");
 		hideIncomingConnectionElements();
 	}
-	
-	function hideIncomingConnectionElements(){
+
+	function hideIncomingConnectionElements() {
 		$(acceptButton).hide();
 		$(declineButton).hide();
 		$(incomingConnectionP).hide();
 	}
-	
-	function getUserFb(){
+
+	function getUserFb() {
 		var myId = getMyId();
 		var responseJSON = null;
 		myDataJSON = {
@@ -523,46 +538,70 @@ function webRTC() {
 		});
 		return responseJSON;
 	}
-	
-	function hideConnectToFbIfConnected(){
+
+	function hideConnectToFbIfConnected() {
 		var userFbId = getUserFb();
-		if(userFbId.fbid != ""){
+		if (userFbId.fbid != "") {
 			$(connectToFBButton).hide();
 		}
 	}
-	
-	function connectToFacebook(){
+
+	function connectToFacebook() {
 		FB.getLoginStatus(function(response) {
-		      if (response.status == 'connected') {
-		        connectUser(response)
-		        $(connectToFBButton).hide();
-		        alert('User successfully connected to FB account');
-		      } else {
-		        FB.login(function(response) {
-		          if (response.authResponse){
-		        	  connectUser(response)
-		        	  $(connectToFBButton).hide();
-		        	  alert('User successfully connected to FB account');
-		          } else {
-		            alert('Authentication failed');
-		          }
-		        }, { scope: 'email' });
-		      }
-		    });
+			if (response.status == 'connected') {
+				connectUser(response)
+				$(connectToFBButton).hide();
+				alert('User successfully connected to FB account');
+			} else {
+				FB.login(function(response) {
+					if (response.authResponse) {
+						connectUser(response)
+						$(connectToFBButton).hide();
+						alert('User successfully connected to FB account');
+					} else {
+						alert('Authentication failed');
+					}
+				}, {
+					scope : 'email'
+				});
+			}
+		});
 	}
-	
+
 	function connectUser() {
-	      FB.api('/me', function(userInfo) {
-	  		var myId = getMyId();
+		FB.api('/me', function(userInfo) {
+			var myId = getMyId();
 			dataJSON = {
 				myId : myId,
 				data : userInfo.id
 			};
 			insertDataToDb(dataJSON, "/connectToFb");
-	      });
-	    }
-	
-	function getFriendById(id){
+		});
+	}
+
+	function sendFile() {
+		var file = fileInput.files[0];
+		if (file != null) {
+			console.log(file.name);
+			var chunkSize = 16384;
+			var sliceFile = function(offset) {
+				var reader = new window.FileReader();
+				reader.onload = (function() {
+					return function(e) {
+						dataChannel.send(e.target.result);
+						if (file.size > offset + e.target.result.byteLength) {
+							window.setTimeout(sliceFile, 0, offset + chunkSize);
+						}
+					};
+				})(file);
+				var slice = file.slice(offset, offset + chunkSize);
+				reader.readAsArrayBuffer(slice);
+			};
+			sliceFile(0);
+		}
+	}
+
+	function getFriendById(id) {
 		var toRet = null
 		$.each(friendsList, function(key, value) {
 			if (value.id == id) {
@@ -570,6 +609,10 @@ function webRTC() {
 			}
 		});
 		return toRet;
+	}
+	
+	function getFileName(){
+		return "webrtc.sql";
 	}
 
 	function encode(username) {
