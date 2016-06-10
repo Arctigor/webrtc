@@ -70,6 +70,10 @@ class Routes {
 					'controller' => 'insertConversation',
 					'template' => 'insertConversation',
 			),
+			'insertFileName' => array(
+					'controller' => 'insertFileName',
+					'template' => 'insertFileName',
+			),
 			'addFriend' => array(
 					'controller' => 'addFriend',
 					'template' => 'addFriend',
@@ -93,6 +97,10 @@ class Routes {
 			'getCandidate' => array(
 					'controller' => 'getCandidate',
 					'template' => 'getCandidate',
+			),
+			'getFileName' => array(
+					'controller' => 'getFileName',
+					'template' => 'getFileName',
 			),
 			'completeConnection' => array(
 					'controller' => 'completeConnection',

@@ -205,6 +205,45 @@ class Controller {
   	}
   }
   
+  public function insertFileName() {
+  	$data = $_POST;
+  	$offererId = $data['myId'];
+  	$answererId = $data['peerId'];
+  	$fileName = $data['data'];
+  	$connection = $this->getConnection();
+  	$getOfferIdSql = "SELECT * FROM `offers` WHERE (offererid="."'" . $offererId .
+  	"' AND " . "answererid='".$answererId.
+  	"') OR (offererid="."'" . $answererId .
+  	"' AND " . "answererid='".$offererId.
+  	"') AND status='complete' ORDER BY updatedtime DESC LIMIT 1";
+  	$getOfferIdResult = $connection->query($getOfferIdSql);
+  	$offer = $getOfferIdResult->fetch_object();
+  	if($offer){
+  		$updateOfferSql = "UPDATE offers SET filename="."'" . $fileName."' WHERE id='".$offer->id."'";
+  		$connection->query($updateOfferSql);
+  	}
+  }
+  
+  public function getFileName(){
+  	$data = $_POST;
+  	$offererId = $data['myId'];
+  	$answererId = $data['peerId'];
+  	$connection = $this->getConnection();
+  	$getOfferIdSql = "SELECT * FROM `offers` WHERE (offererid="."'" . $offererId .
+  	"' AND " . "answererid='".$answererId.
+  	"') OR (offererid="."'" . $answererId .
+  	"' AND " . "answererid='".$offererId.
+  	"') AND status='complete' ORDER BY updatedtime DESC LIMIT 1";
+  	$getOfferIdResult = $connection->query($getOfferIdSql);
+  	$offer = $getOfferIdResult->fetch_object();
+  	if($offer){
+  		$arrayFile = array();
+  		$arrayFile["name"] = $offer->filename;
+  		return new JsonResponse($arrayFile);
+  	}
+  	return array();
+  }
+  
   public function insertConversation(){
   	$data = $_POST;
   	$offererUsername = $data['myUsername'];

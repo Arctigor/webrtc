@@ -109,6 +109,7 @@ function webRTC() {
 		var remoteSDP = new RTCSessionDescription();
 		remoteSDP.type = "offer";
 		remoteSDP.sdp = responseJSON.offerersdp;
+		peerId = responseJSON.offererid;
 		if (localStream != null) {
 			remotePeerConnection.addStream(localStream);
 		}
@@ -380,12 +381,17 @@ function webRTC() {
 			var receiveBuffer = [];
 			receiveBuffer.push(event.data);
 			var received = new window.Blob(receiveBuffer);
-		    receiveBuffer = [];
+			receiveBuffer = [];
 			downloadAnchor.href = URL.createObjectURL(received);
-			downloadAnchor.download = getFileName();
-			downloadAnchor.textContent = 'Click to download file: ' + getFileName();
-			console.log("File");
+			var name = getFileName();
+			createDownloadLink(name);
 		}
+	}
+	
+	function createDownloadLink(name){
+		downloadAnchor.download = name;
+		downloadAnchor.textContent = 'Click to download file: '
+				+ name;
 	}
 
 	function eventDCOpen() {
@@ -581,6 +587,13 @@ function webRTC() {
 
 	function sendFile() {
 		var file = fileInput.files[0];
+		insertFileName(file.name);
+		setTimeout(function() {
+			transferFile(file);
+		}, 2000);
+
+	}
+	function transferFile(file) {
 		if (file != null) {
 			console.log(file.name);
 			var chunkSize = 16384;
@@ -601,6 +614,17 @@ function webRTC() {
 		}
 	}
 
+	function insertFileName(fileName) {
+		var myId = getMyId();
+		var peerId = getPeerId();
+		fileJSON = {
+			myId : myId,
+			peerId : peerId,
+			data : fileName,
+		};
+		insertDataToDb(fileJSON, "/insertFileName");
+	}
+
 	function getFriendById(id) {
 		var toRet = null
 		$.each(friendsList, function(key, value) {
@@ -610,9 +634,25 @@ function webRTC() {
 		});
 		return toRet;
 	}
-	
-	function getFileName(){
-		return "webrtc.sql";
+
+	function getFileName() {
+		var myId = getMyId();
+		var peerId = getPeerId();
+		var responseJSON = null;
+		myDataJSON = {
+			myId : myId,
+			peerId : peerId,
+		};
+		$.ajax({
+			data : myDataJSON,
+			type : "post",
+			url : "/getFileName",
+			async : false,
+			success : function(response) {
+				responseJSON = response;
+			}
+		});
+		return responseJSON.name;
 	}
 
 	function encode(username) {

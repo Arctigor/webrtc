@@ -74,6 +74,7 @@ CREATE TABLE `offers` (
   `answerersdp` text NOT NULL,
   `candidate` text NOT NULL,
   `status` varchar(40) NOT NULL,
+  `filename` varchar(40) NOT NULL,
   `updatedtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
