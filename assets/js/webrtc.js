@@ -452,8 +452,10 @@ function webRTC() {
 
 	function createFriendsTable() {
 		var responseJSON = getFriendsFromDb();
+		console.log(responseJSON);
 		if (responseJSON != null) {
 			friendsList = responseJSON;
+			console.log(friendsList);
 			populateTable();
 			addRowHandlers();
 		}
@@ -463,7 +465,11 @@ function webRTC() {
 		$.each(friendsList, function(key, value) {
 			var row = friendsTable.insertRow(-1);
 			var userCell = row.insertCell(0);
-			userCell.innerHTML = '<a href="#" rel="'+value.id+'" style="color:green;font-weight: bold;">'+value.username+'</a>';
+			if(value.isonline == 1){
+				userCell.innerHTML = '<a href="#" rel="'+value.id+'" style="color:green;font-weight: bold;">'+value.username+'</a>';
+			} else {
+				userCell.innerHTML = '<a href="#" rel="'+value.id+'">'+value.username+'</a>';
+			}
 		});
 	}
 

@@ -31,9 +31,13 @@ class Controller {
   }
   
   public function logout(){
+  	$connection = $this->getConnection();
+  	$idCookie = $_COOKIE['id'];
   	$this->unsetCookie('id');
   	$this->unsetCookie('username');
 	session_destroy();
+	$updateOnlineSql = "UPDATE user SET isonline=0 WHERE id='".$idCookie."'";
+	$connection->query($updateOnlineSql);
 	header("Location: /");
   }
   
@@ -89,6 +93,9 @@ class Controller {
   			$_SESSION['id'] = $user->id;
   			setcookie('id', $user->id, time() + (86400 * 30), "/");
   			setcookie('username', $_SESSION['username'], time() + (86400 * 30), "/");
+  			
+  			$updateOnlineSql = "UPDATE user SET isonline=1 WHERE id='".$user->id."'";
+  			$connection->query($updateOnlineSql);
   			if($encoding){
   				header("Location: /welcome");
   			} else{
@@ -401,13 +408,14 @@ class Controller {
   	
   	$connection = $this->getConnection();
   	
-  	$getFriends = "SELECT user.id,user.username FROM user INNER JOIN friends 
+  	$getFriends = "SELECT user.id,user.username,user.isonline FROM user INNER JOIN friends 
   		WHERE friends.userid='".$myId."' AND user.id=friends.friendid";
   	$getFriendsResult = $connection->query($getFriends);
   	$friendsArray = array();
   	foreach ($getFriendsResult as $friend) {
     	$row_array['id'] = $friend['id'];
     	$row_array['username'] = $friend['username'];
+    	$row_array['isonline'] = $friend['isonline'];
    		array_push($friendsArray,$row_array);
 	}
   	return new JsonResponse($friendsArray);
