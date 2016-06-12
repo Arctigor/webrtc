@@ -74,8 +74,7 @@
 
 	<div class="friendsMenu">
 		<table id="friendsTable" class="friendsTable">
-			<tr id="friendTab">
-			</tr>
+			<tr id="friendTab">	</tr>
 		</table>
 	</div>
 

@@ -463,9 +463,7 @@ function webRTC() {
 		$.each(friendsList, function(key, value) {
 			var row = friendsTable.insertRow(-1);
 			var userCell = row.insertCell(0);
-			userCell.innerHTML = '<a href="#" rel="'+value.id+'">'+value.username+'</a>';
-			/*var historyCell = row.insertCell(1);
-			historyCell.innerHTML = "View Conversation";*/
+			userCell.innerHTML = '<a href="#" rel="'+value.id+'" style="color:green;font-weight: bold;">'+value.username+'</a>';
 		});
 	}
 
@@ -477,6 +475,7 @@ function webRTC() {
 				var createClickHandler = function(cell, row) {
 					return function() {
 						var cellValue = cell.innerHTML;
+						addTab(cellValue);
 						if (!offerer) {
 							$.each(friendsList, function(key, value) {
 								if (cellValue.includes(value.username)) {
@@ -484,9 +483,6 @@ function webRTC() {
 									peerId = selectedFriend.id;
 								}
 							});
-							/*if (cellValue == "View Conversation") {
-								viewHistory(friendsList[row - 1]);
-							}*/
 						}
 					};
 				};

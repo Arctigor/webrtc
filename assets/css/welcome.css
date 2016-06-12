@@ -1,7 +1,7 @@
 /* Declare color variables */
 :root {
-  --tabColorVar: #009999;
-  --currentTabColorVar: #009999;
+  --tabColorVar: #66CDAA;
+  --currentTabColorVar: #66CDAA;
   --backgroundColorVar: #eee;
   --buttonsColorVar: #bbb;
 }
@@ -13,7 +13,7 @@ html {
 /* Tabs design */
 #tabs { margin:0; padding:0; list-style:none; overflow:hidden; }
 #tabs li { float:left; display:block; padding:5px; background-color:#bbb; margin-right:5px; color:#fff;}
-#tabs li a { color:var(--tabColorVar); text-decoration:none; }
+#tabs li a { color:var(--mainColorVar); text-decoration:none; }
 #tabs li.current { background-color:var(--currentTabColorVar);}
 #tabs li.current a { color:#fff; text-decoration:none; }
 	 
@@ -258,7 +258,7 @@ html {
 
 .fileClass{
 	display: block;
-	background-color:  var(--mainColorVar);
+	background-color:  var(--currentTabColorVar);
     border: none;
     color: white;
     padding: 10px 26px;
@@ -267,7 +267,7 @@ html {
     border-radius: 10%;
 }
 .fileClass:hover{
-	background-color: var(--currentTabColorVar);
+	background-color: var(--mainColorVar);
 }
 
 /* Colours used by the background buttons */
