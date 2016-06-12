@@ -30,7 +30,7 @@ html {
 
 /* style for welcome message */
 .userClass{
-	width: 20%;
+	width: 25%;
     padding: 15px;
 	position: absolute;
     right: 0px;
@@ -45,7 +45,7 @@ html {
 	border:1px solid lightgray;
 	float:left;
 	overflow: auto;
-	width: 70%;
+	width: 220px;
 	border-radius:10px;
 
 }
@@ -68,7 +68,7 @@ html {
 
 /* style for friends list header:  position of search, add friend button */
 .friendsMenuHeader {
-	width: 20%;
+	width: 25%;
     padding: 15px;
 	position: absolute;
     right: 0px;
@@ -80,14 +80,15 @@ html {
 
 /* style for friends list */
 .friendsMenu {
-	width: 20%;
+	width: 25%;
     padding: 15px;
 	position: absolute;
     right: 0px;
 	margin-top:280px;
     overflow: auto; 
-	height: 300px;
-	float:left; 	
+	height: 160px;
+	float:left; 		
+	border-bottom: 1px solid gray;
 }
 
 .friendsMenu tr {
@@ -95,10 +96,10 @@ html {
     margin: 0;
     padding: 0;
 	color: #ffffff;
-	margin-top: 20px;
 	display:block;
+	width: 220px;
 }
-.friendsMenu th {
+.friendsMenu td {
     padding: 8px;
     margin-bottom: 2px;
     background-color :var(--currentTabColorVar);;
@@ -108,12 +109,12 @@ html {
 	font-size:12px;
 }
 
-.friendsMenu th a{
+.friendsMenu td a{
 	color: #ffffff;
 	text-decoration:none;
 }
 
-.friendsMenu th:hover {
+.friendsMenu td:hover {
     background-color: #008B8B;
 }
 
@@ -154,9 +155,25 @@ html {
 	background-color: var(--currentTabColorVar);
 }
 
+.buttonClassFb{
+	background-color:  var(--buttonsColorVar);
+    border: none;
+    color: white;
+    padding: 10px 12px;
+    text-decoration: none;
+    margin: 8px 10px;
+    cursor: pointer;
+	border-radius: 5%;
+	float:right;
+}
+
+.buttonClassFb:hover{
+	background-color: var(--currentTabColorVar);
+}
+
 /* style for settings menu: background menu buttons*/
 .settingsMenu{
-	width: 20%;
+	width: 25%;
     padding: 15px;
 	position: absolute;
     right: 0px;
@@ -217,14 +234,40 @@ html {
 /* style for Video call */
 .videoReceiveClass{
 	border:solid;
-	height: 35%;
-	width:75%;
+	border-color: gray;
+	height: 45%;
+	width:70%;
 }
 
 .videoSendClass{
 	border:solid;
+	border-color: gray;
 	height: 100px;
 	width:20%;
+}
+
+
+/* File transfer */
+.fileTransfer{
+	margin-top: 450px;	
+	width: 27%;
+	position: absolute;
+    right: 0px;
+	border-bottom: 1px solid gray;
+}
+
+.fileClass{
+	display: block;
+	background-color:  var(--mainColorVar);
+    border: none;
+    color: white;
+    padding: 10px 26px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 10%;
+}
+.fileClass:hover{
+	background-color: var(--currentTabColorVar);
 }
 
 /* Colours used by the background buttons */
@@ -268,13 +311,13 @@ html {
 }
 
 .lightGrey{
-	background-color: #eee; 
-	border-color: #eee;
+	background-color: #bbb; 
+	border-color: #bbb;
 }
 
 .lightGrey:hover{
 	background-color: white;
-    border-color: lightGrey;
+    border-color: #bbb;
 }
 
 .lightSalmon{
@@ -287,6 +330,8 @@ html {
     border-color: lightSalmon;
 }
 
-
+.noBorder{
+	border:none;
+}
 
 

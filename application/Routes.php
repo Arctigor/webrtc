@@ -51,7 +51,7 @@ class Routes {
 							'/assets/js/jquery-2.2.1.min.js',
 							'/assets/js/webrtc.js',
 							'/assets/js/facebook.js',
-							//'/assets/js/text_chat.js',
+							'/assets/js/tabs.js',
 					),
 			),
 			'insertOffer' => array(

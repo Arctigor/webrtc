@@ -376,6 +376,7 @@ function webRTC() {
 			var date = getCurrentTime();
 			dataChannelReceive.value += "[" + date + "] " + peerUsername + ": "
 					+ message + "\n";
+			dataChannelReceive.scrollTop = dataChannelReceive.scrollHeight;
 			saveConversation(peerUsername, message);
 		} catch (err) {
 			var receiveBuffer = [];
@@ -420,6 +421,7 @@ function webRTC() {
 		dataChannelReceive.value += "[" + date + "] " + username + ": " + data
 				+ "\n";
 		dataChannel.send(encode(username) + data);
+		dataChannelReceive.scrollTop = dataChannelReceive.scrollHeight;
 	}
 
 	function getCurrentTime() {
@@ -444,7 +446,7 @@ function webRTC() {
 	function deleteFriendsTable() {
 		var rows = friendsTable.getElementsByTagName("tr");
 		for (i = 0; i < rows.length; i++) {
-			document.getElementById("friendsTable").deleteRow(i + 1);
+			document.getElementById("friendsTable").deleteRow(i);
 		}
 	}
 
@@ -461,9 +463,9 @@ function webRTC() {
 		$.each(friendsList, function(key, value) {
 			var row = friendsTable.insertRow(-1);
 			var userCell = row.insertCell(0);
-			userCell.innerHTML = value.username;
-			var historyCell = row.insertCell(1);
-			historyCell.innerHTML = "View Conversation";
+			userCell.innerHTML = '<a href="#" rel="'+value.id+'">'+value.username+'</a>';
+			/*var historyCell = row.insertCell(1);
+			historyCell.innerHTML = "View Conversation";*/
 		});
 	}
 
@@ -477,14 +479,14 @@ function webRTC() {
 						var cellValue = cell.innerHTML;
 						if (!offerer) {
 							$.each(friendsList, function(key, value) {
-								if (value.username == cellValue) {
+								if (cellValue.includes(value.username)) {
 									selectedFriend = value;
 									peerId = selectedFriend.id;
 								}
 							});
-							if (cellValue == "View Conversation") {
+							/*if (cellValue == "View Conversation") {
 								viewHistory(friendsList[row - 1]);
-							}
+							}*/
 						}
 					};
 				};
@@ -595,7 +597,6 @@ function webRTC() {
 	}
 	function transferFile(file) {
 		if (file != null) {
-			console.log(file.name);
 			var chunkSize = 16384;
 			var sliceFile = function(offset) {
 				var reader = new window.FileReader();
