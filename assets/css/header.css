@@ -32,5 +32,8 @@ li a:hover {
 .home{
  float:left;
 }
+.successMessage{
+	color: green;
+}
 
 

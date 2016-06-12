@@ -45,3 +45,6 @@ html {
 .submitButtonClass:hover{
 	background-color: var(--hoverColorVar);
 }
+.errorMessage{
+	color: red;
+}
