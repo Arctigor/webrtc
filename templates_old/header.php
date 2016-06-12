@@ -2,11 +2,11 @@
 <title>WebRTC</title>
 
 <head>
+<link rel="stylesheet" href="/assets/css/main.css" />
 </head>
 <body>
-<link rel="stylesheet" href="/assets/css/header.css" />
 	<div class="container">
-		<div>
+		<div class="menu">
 			<ul>
 				<li><a href="/">Home</a></li>
 				<li><a href="/login">Login</a></li>

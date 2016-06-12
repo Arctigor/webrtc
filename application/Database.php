@@ -1,14 +1,4 @@
 <?php
-/**
- * @file
- *   Database osztalyt tartalmazza, adatbazis alap metodusokkal.
- */
-
-/**
- * Adatbazis kezeles alap fuggvenyei.
- *
- * TODO jo lenne konnexio bezaras fuggveny.
- */
 
 class Database {
 

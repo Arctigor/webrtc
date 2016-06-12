@@ -1,0 +1,47 @@
+
+:root {
+  --mainColorVar: #009999;
+  --hoverColorVar: #00CCCC;
+}
+
+
+body {
+    background-color: #eee;	
+}
+
+html {
+    font-family: "Lucida Sans", sans-serif;
+}
+
+
+.menu {
+	position: fixed;
+	top: 35%;
+    left: 40%;
+	border: 5px double var(--mainColorVar);
+	padding: 10px;
+	color: #009999;	
+} 
+
+.inputBoxClass{
+	font-family: "Lucida Sans", sans-serif; 
+	width:200px; 
+	height:20px;
+	border:1px solid var(--mainColorVar);
+	float:right;
+}
+
+.submitButtonClass{
+	display: block;
+	float:right;
+    background-color:  var(--mainColorVar);
+    border: none;
+    color: white;
+    padding: 10px 26px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.submitButtonClass:hover{
+	background-color: var(--hoverColorVar);
+}

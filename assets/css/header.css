@@ -1,0 +1,36 @@
+:root {
+  --mainColorVar: #009999;
+  --backgroundColorVar: #eee;
+}
+body {
+    background-color: var(--backgroundColorVar);
+}
+html {
+    font-family: "Lucida Sans", sans-serif;
+}
+
+ul {
+    list-style-type: none;   	
+	border: double;
+	padding-bottom:30px;
+	padding-top:10px;
+	padding-right: 0;
+	padding-left: 10px;
+	color: var(--mainColorVar);
+}
+
+li a {
+    float:right;
+    color: #000;
+    margin-right: 20px;
+    text-decoration: none;
+}
+li a:hover {
+    color: var(--mainColorVar);
+}
+
+.home{
+ float:left;
+}
+
+

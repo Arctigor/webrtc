@@ -1,0 +1,292 @@
+/* Declare color variables */
+:root {
+  --tabColorVar: #009999;
+  --currentTabColorVar: #009999;
+  --backgroundColorVar: #eee;
+  --buttonsColorVar: #bbb;
+}
+
+html {
+    font-family: "Lucida Sans", sans-serif;
+}
+
+/* Tabs design */
+#tabs { margin:0; padding:0; list-style:none; overflow:hidden; }
+#tabs li { float:left; display:block; padding:5px; background-color:#bbb; margin-right:5px; color:#fff;}
+#tabs li a { color:var(--tabColorVar); text-decoration:none; }
+#tabs li.current { background-color:var(--currentTabColorVar);}
+#tabs li.current a { color:#fff; text-decoration:none; }
+	 
+#wrapper { 
+	width: 70%;
+	height: 100%;
+    border: 1px solid #ddd;
+    padding: 10px;
+	background-color: #eee;
+	position:relative;
+	float: left;
+    margin: 0;
+}
+
+/* style for welcome message */
+.userClass{
+	width: 20%;
+    padding: 15px;
+	position: absolute;
+    right: 0px;
+	float:right;
+	border-bottom: 1px solid gray; 
+}
+
+/* style for search friend box */
+.searchBoxClass{
+	font-family: "Lucida Sans", sans-serif; 
+	height:24px;
+	border:1px solid lightgray;
+	float:left;
+	overflow: auto;
+	width: 70%;
+	border-radius:10px;
+
+}
+
+/* style for add friend button */
+.addFriendButtonClass{
+	float:right;
+    background-color:  var(--buttonsColorVar);
+    border: none;
+    color: white;
+    padding: 4px 2px;
+    text-decoration: none;
+    margin: 2px 1px;
+    cursor: pointer;
+	border-radius: 30%;
+}
+.addFriendButtonClass:hover{
+	background-color: var(--currentTabColorVar);
+}
+
+/* style for friends list header:  position of search, add friend button */
+.friendsMenuHeader {
+	width: 20%;
+    padding: 15px;
+	position: absolute;
+    right: 0px;
+	margin-top:170px;
+    overflow: auto; 
+	height: 300px;
+	float:left; 	
+}
+
+/* style for friends list */
+.friendsMenu {
+	width: 20%;
+    padding: 15px;
+	position: absolute;
+    right: 0px;
+	margin-top:280px;
+    overflow: auto; 
+	height: 300px;
+	float:left; 	
+}
+
+.friendsMenu tr {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+	color: #ffffff;
+	margin-top: 20px;
+	display:block;
+}
+.friendsMenu th {
+    padding: 8px;
+    margin-bottom: 2px;
+    background-color :var(--currentTabColorVar);;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	display:block;
+	font-size:12px;
+}
+
+.friendsMenu th a{
+	color: #ffffff;
+	text-decoration:none;
+}
+
+.friendsMenu th:hover {
+    background-color: #008B8B;
+}
+
+/* style for history link */
+.historyClass{
+	text-decoration: none;
+	margin-left: 10px;
+}
+
+.incommingClass{
+	text-decoration: none;
+	margin-left: 10px;
+}
+
+.acceptButtonClass{
+    background-color :var(--currentTabColorVar);
+    border: none;
+    color: white;
+    padding: 10px 13px;
+    text-decoration: none;
+    margin: 2px 1px;
+    cursor: pointer;
+	border-radius: 50%;
+}
+
+/* style for connection buttons: start and stop connection */
+.buttonClass{
+	background-color:  var(--buttonsColorVar);
+    border: none;
+    color: white;
+    padding: 16px 33px;
+    text-decoration: none;
+    margin: 2px 1px;
+    cursor: pointer;
+	border-radius: 5%;
+}
+.buttonClass:hover{
+	background-color: var(--currentTabColorVar);
+}
+
+/* style for settings menu: background menu buttons*/
+.settingsMenu{
+	width: 20%;
+    padding: 15px;
+	position: absolute;
+    right: 0px;
+	float:right;
+	margin-top:60px;	 
+    padding: 1em;
+    overflow: hidden;
+	border-bottom: 1px solid gray;
+}
+
+.settingsMenu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* style for textarea used for sending and receiving text messages */
+.notEditableTextArea {
+    width: 100%;
+    height: 150px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    resize: none;
+} 
+
+.editableTextArea{
+	width: 80%;
+    height: 70px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    resize: none;
+}
+
+/* style for Send message button */
+.sendButtonClass{
+	float:right;
+    background-color:  var(--buttonsColorVar);
+    border: none;
+    color: white;
+    padding: 26px 22px;
+    text-decoration: none;
+    margin: 2px 1px;
+    cursor: pointer;
+	border-radius: 20%;
+}
+.sendButtonClass:hover{
+	background-color: var(--currentTabColorVar);
+}
+
+/* style for Video call */
+.videoReceiveClass{
+	border:solid;
+	height: 35%;
+	width:75%;
+}
+
+.videoSendClass{
+	border:solid;
+	height: 100px;
+	width:20%;
+}
+
+/* Colours used by the background buttons */
+.colorButton{
+	border-radius: 10%;
+	border:none;
+    color: black;
+    padding: 10px 12px;
+    text-align: center;
+    display: inline-block;
+	border: solid;
+	}
+	
+.bisque{
+	background-color: bisque; 
+	border-color: bisque;
+}
+
+.bisque:hover{
+	background-color: white;
+    border-color: bisque;
+}		
+.lavender{
+	background-color: lavender ; 
+	border-color: lavender;
+}
+
+.lavender:hover{
+	background-color: white;
+    border-color: lavender;
+}
+
+.mediumAquaMarine{
+	background-color: mediumAquaMarine ; 
+	border-color: mediumAquaMarine;
+}
+
+.mediumAquaMarine:hover{
+	background-color: white;
+    border-color: mediumAquaMarine;
+}
+
+.lightGrey{
+	background-color: #eee; 
+	border-color: #eee;
+}
+
+.lightGrey:hover{
+	background-color: white;
+    border-color: lightGrey;
+}
+
+.lightSalmon{
+	background-color: lightSalmon; 
+	border-color: lightSalmon;
+}
+
+.lightSalmon:hover{
+	background-color: white;
+    border-color: lightSalmon;
+}
+
+
+
+
