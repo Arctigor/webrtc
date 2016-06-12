@@ -233,17 +233,19 @@ html {
 
 /* style for Video call */
 .videoReceiveClass{
-	border:solid;
-	border-color: gray;
 	height: 45%;
 	width:70%;
+	box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
 }
 
 .videoSendClass{
-	border:solid;
-	border-color: gray;
 	height: 100px;
 	width:20%;
+	box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
 }
 
 

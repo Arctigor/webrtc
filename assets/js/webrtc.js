@@ -47,6 +47,8 @@ function webRTC() {
 	setInterval(waitingForOffer, checkDb);
 	setInterval(waitingForAnswer, checkDb);
 	setInterval(waitingForCandidate, checkDb);
+	setInterval(updateFriendsTable, checkDb);
+	
 
 	startButton.disabled = false;
 
@@ -430,6 +432,11 @@ function webRTC() {
 				+ ":" + currentdate.getSeconds();
 		return time;
 	}
+	
+	function updateFriendsTable(){
+		deleteFriendsTable();
+		createFriendsTable();
+	}
 
 	function addFriendByUser() {
 		var responseJSON = addFriendsByUsername(addFriendTextBox.value);
@@ -445,17 +452,18 @@ function webRTC() {
 
 	function deleteFriendsTable() {
 		var rows = friendsTable.getElementsByTagName("tr");
-		for (i = 0; i < rows.length; i++) {
-			document.getElementById("friendsTable").deleteRow(i);
+		var rowsLength =  rows.length;
+		if(rowsLength > 1){
+			for (i = 0; i < rowsLength - 1; i++) {
+				document.getElementsByTagName('tr')[1].remove();
+			}
 		}
 	}
 
 	function createFriendsTable() {
 		var responseJSON = getFriendsFromDb();
-		console.log(responseJSON);
 		if (responseJSON != null) {
 			friendsList = responseJSON;
-			console.log(friendsList);
 			populateTable();
 			addRowHandlers();
 		}
@@ -515,6 +523,15 @@ function webRTC() {
 
 	function acceptConnection() {
 		answeredConnection = true;
+		var name;
+		var id;
+		$.each(friendsList, function(key, value) {
+			if (incomingOfferJSON.offererid == value.id) {
+				name = value.username;
+				id = incomingOfferJSON.offererid;
+			}
+		});
+		addTab('<a href="#" rel="'+id+'">'+name+'</a>');
 		createAnswer(incomingOfferJSON);
 		hideIncomingConnectionElements();
 	}
