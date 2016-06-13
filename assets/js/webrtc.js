@@ -279,7 +279,7 @@ function webRTC() {
 				|| navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 		navigator.getUserMedia({
 			video : true,
-			audio : true
+			audio : true,
 		}, gotStream, errorHandler);
 	}
 
@@ -513,7 +513,6 @@ function webRTC() {
 
 	function showIncomingConnection(responseJSON) {
 		var username = getFriendById(responseJSON.offererid);
-		;
 		$(incomingConnectionP).text("Incoming connection from: " + username);
 		$(acceptButton).show();
 		$(declineButton).show();
