@@ -34,7 +34,7 @@
 
 		<div id="buttons">
 			<button id="startButton" class="buttonClass">Start</button>
-			<button id="closeButton" class="buttonClass">Stop</button>
+			<!-- <button id="closeButton" class="buttonClass">Stop</button> -->
 			<button id="connect_to_fb" class="buttonClassFb">Connect to your FB</button>
 		</div>
 
@@ -82,7 +82,7 @@
 
 
 	<br> <br>
-	<div class="fileTransfer">
+	<div id="fileTransfer" class="fileTransfer">
 		<form id="fileInfo">
 			<input type="file" id="fileInput" name="files" class="fileClass" /><br>
 		</form>

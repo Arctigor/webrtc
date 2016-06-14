@@ -27,6 +27,7 @@ function webRTC() {
 	var incomingConnectionP = document.getElementById("connection");
 	var downloadAnchor = document.getElementById("download");
 	var history = document.getElementById("historyId");
+	var fileTransfer = document.getElementById("fileTransfer");
 	var offerJSON;
 	var incomingOfferJSON;
 	var friendsList;
@@ -44,6 +45,7 @@ function webRTC() {
 	hideIncomingConnectionElements();
 	hideConnectToFbIfConnected();
 	hideHistoryLink();
+	hideFileTransfer();
 
 	var checkDb = 5000; // milliseconds
 	setInterval(waitingForOffer, checkDb);
@@ -404,6 +406,7 @@ function webRTC() {
 		dataChannelSend.disabled = false;
 		dataChannelSend.focus();
 		dataChannelSend.placeholder = '';
+		$(fileTransfer).show();
 	}
 
 	function eventDCClosed() {
@@ -411,6 +414,7 @@ function webRTC() {
 		dataChannelSend.disabled = true;
 		dataChannelSend.focus();
 		dataChannelSend.placeholder = '';
+		$(fileTransfer).hide();
 	}
 
 	function eventDCError(event) {
@@ -576,6 +580,10 @@ function webRTC() {
 	
 	function hideHistoryLink() {
 		$(history).hide();
+	}
+	
+	function hideFileTransfer() {
+		$(fileTransfer).hide();
 	}
 
 	function connectToFacebook() {
