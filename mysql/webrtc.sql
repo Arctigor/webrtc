@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 06, 2016 at 10:02 PM
+-- Generation Time: Jun 14, 2016 at 01:38 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 7.0.2
 
@@ -38,13 +38,7 @@ CREATE TABLE `friends` (
 
 INSERT INTO `friends` (`id`, `userid`, `friendid`) VALUES
 (1, 1, 2),
-(2, 2, 1),
-(3, 1, 3),
-(4, 3, 1),
-(5, 3, 4),
-(6, 4, 3),
-(7, 2, 3),
-(8, 3, 2);
+(2, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -88,6 +82,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
   `facebookid` varchar(100) NOT NULL,
   `isonline` int(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -96,11 +91,9 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `password`, `facebookid`, `isonline`) VALUES
-(1, 'bene', '1234', '1197705283573366', 0),
-(2, 'szabi', '1234', '', 0),
-(3, 'andrea', '1234', '', 0),
-(4, 'leut puternic', 'leut', '', 0);
+INSERT INTO `user` (`id`, `username`, `password`, `email`, `facebookid`, `isonline`) VALUES
+(1, 'bene', '1234', 'bene_szabolcs@yahoo.com', '1197705283573366', 0),
+(2, 'szabi', '1234', 'mbsz2@yahoo.com', '', 0);
 
 --
 -- Indexes for dumped tables

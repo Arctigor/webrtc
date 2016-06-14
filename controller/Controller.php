@@ -133,7 +133,7 @@ class Controller {
   		if($this->validatePassword($pass, $confPass)){
   			if($this->validateUsername($username, $user)){
   				if($this->validateEmail($email)){
-  					$registerSql = "INSERT INTO user VALUES (0, '".$username."', '".$pass."', '".$email."', 0)";
+  					$registerSql = "INSERT INTO user VALUES (0, '".$username."', '".$pass."', '".$email."', '', 0)";
   					$registerResult = $connection->query($registerSql);
   					$this->setSuccessMessage("User registered successfully!");
   					return "";
