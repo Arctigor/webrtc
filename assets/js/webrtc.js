@@ -26,6 +26,7 @@ function webRTC() {
 	var sendFileButton = document.getElementById("sendFileButton");
 	var incomingConnectionP = document.getElementById("connection");
 	var downloadAnchor = document.getElementById("download");
+	var history = document.getElementById("historyId");
 	var offerJSON;
 	var incomingOfferJSON;
 	var friendsList;
@@ -42,6 +43,7 @@ function webRTC() {
 	createFriendsTable();
 	hideIncomingConnectionElements();
 	hideConnectToFbIfConnected();
+	hideHistoryLink();
 
 	var checkDb = 5000; // milliseconds
 	setInterval(waitingForOffer, checkDb);
@@ -570,6 +572,10 @@ function webRTC() {
 		if (userFbId.fbid != "") {
 			$(connectToFBButton).hide();
 		}
+	}
+	
+	function hideHistoryLink() {
+		$(history).hide();
 	}
 
 	function connectToFacebook() {

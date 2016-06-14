@@ -1,4 +1,5 @@
 // Add new friend tab when friend is selected from the Friend Menu Table
+var tabs = 0;
 function addTab(link) {   	
 	// If tab already exist in the list, return
 	if ($("#" + $(link).attr("rel")).length != 0)
@@ -18,12 +19,14 @@ function addTab(link) {
     // set the newly added tab as current
    // $("#" + $(link).attr("rel") + "_content").show();
 	
-	document.getElementById("historyId").style.visibility = "visible";	
-	
+	var history = document.getElementById("historyId");
+	$(history).show();
+	tabs++;
 }
 
 // Remove the tab when x is clicked
-function removeFunction(id){		   
+function removeFunction(id){	
+	tabs--;
     // remove tab and related content    
 	$("#"+id + "_content").remove();
 	$("#"+id + "_content_remove").remove();
@@ -46,6 +49,10 @@ function removeFunction(id){
 	 } else{
 		// show history
 		 $("#dataChannelReceive").text("");
+		 var history = document.getElementById("historyId");
+		 if(tabs == 0){
+			 $(history).hide();
+		 }
 	 }
 }
 
@@ -75,6 +82,5 @@ function changeBackground(color) {
 // display History
 function displayHistory(){
 	var currentId = $($("#tabs li.current")).find("a.tab").attr("id");
-	
 	window.open("/history/?peerId=" + currentId + "");	 
 }
