@@ -285,10 +285,13 @@ class Controller {
   			"') OR ( firstuser='".$currentUser."' AND seconduser='".$user->username."')";
   	
   			$getHistoryResult = $connection->query($getHistorySql);
+  			$histArray = array();
   			foreach ($getHistoryResult as $history) {
   				$conversation = "[".$history['datetime']."] ".$history['seconduser'].": ".$history['message']."<br>"; 
-    			print_r($conversation);
+  				$row_array['message'] = $conversation;
+  				array_push($histArray, $row_array);
 			}
+			$this->setHistoryEntries($histArray);
   	   }
      }
   }
@@ -435,6 +438,10 @@ class Controller {
   private function setErrorMessage($message, $url){
   	$_SESSION['error'] = $message;
   	header("Location: ".$url."");
+  }
+  
+  private function setHistoryEntries($message){
+  	$_SESSION['history'] = $message;
   }
   
   private function setSuccessMessage($message, $url){
