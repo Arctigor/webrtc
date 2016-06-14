@@ -19,6 +19,9 @@ class Controller {
   public function welcome() {}
   
   public function home() {
+  	if(isset($_SESSION['username'])){
+  		header("Location: /welcome");
+  	} 
   	return array();
   }
 
