@@ -64,7 +64,7 @@ class Controller {
 			$password = $user->password;
 			return $this->loginWith($username, $password, false);
 		} else {
-			$this->setSuccessMessage("Fb account is not connected to any registered account!");
+			$this->setSuccessMessage("Fb account is not connected to any registered account!", "/home");
 		}
   	} else if(isset($_POST['username']) || isset($_POST['password'])){
   		$username = $_POST['username'];
@@ -107,10 +107,10 @@ class Controller {
   				return new JsonResponse($arrayLogin);
   			}
   		} else {
-  			print_r("Wrong username or password");
+  			$this->setErrorMessage("Wrong username or password", "/login");
   		}
   	} else {
-  		print_r("Wrong username or password");
+  		$this->setErrorMessage("Wrong username or password", "/login");
   	}
   }
   
@@ -135,18 +135,18 @@ class Controller {
   				if($this->validateEmail($email)){
   					$registerSql = "INSERT INTO user VALUES (0, '".$username."', '".$pass."', '".$email."', '', 0)";
   					$registerResult = $connection->query($registerSql);
-  					$this->setSuccessMessage("User registered successfully!");
+  					$this->setSuccessMessage("User registered successfully!", "/home");
   					return "";
   				}
-  				$this->setErrorMessage("Invalid email format!");
+  				$this->setErrorMessage("Invalid email format!", "/register");
   				return "";
   			}
   			return "";
   		}
-  		$this->setErrorMessage("Password and confirm password are not the same!");
+  		$this->setErrorMessage("Password and confirm password are not the same!", "/register");
   		return "";
   	} 
-  	$this->setErrorMessage("Fill in the fields!");
+  	$this->setErrorMessage("Fill in the fields!", "/register");
   	return "";
   }
   
@@ -432,14 +432,14 @@ class Controller {
   	return $username == "" || $email == "" || $pass == "" || $confPass == "";
   }
  
-  private function setErrorMessage($message){
+  private function setErrorMessage($message, $url){
   	$_SESSION['error'] = $message;
-  	header("Location: /register");
+  	header("Location: ".$url."");
   }
   
-  private function setSuccessMessage($message){
+  private function setSuccessMessage($message, $url){
   	$_SESSION['success'] = $message;
-  	header("Location: /home");
+  	header("Location: ".$url."");
   }
   
   private function validatePassword($pass, $confPass){
@@ -449,11 +449,11 @@ class Controller {
   private function validateUsername($username, $dbUser){
   	$toRet = true;
   	if ($dbUser != null){
-  		$this->setErrorMessage("Username already exists!");
+  		$this->setErrorMessage("Username already exists!", "/register");
   		$toRet = false;
   	}
   	if(strpos($username, ' ') !== false) {
-  		$this->setErrorMessage("Username should not contain space characters!");
+  		$this->setErrorMessage("Username should not contain space characters!", "/register");
   		$toRet = false;
   	}
 	return $toRet;

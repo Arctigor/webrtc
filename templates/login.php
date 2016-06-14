@@ -12,4 +12,12 @@
   <br>
   <input type="submit" class="submitButtonClass" value="Submit">
 </form>
+	<label class="errorMessage"><br>
+	<?php 	
+	if(isset($_SESSION['error']) && $_SESSION['error'] != ""){
+			print_r($_SESSION['error']);
+			$_SESSION['error'] = "";
+		}
+		?>
+	</label>
 </div>
