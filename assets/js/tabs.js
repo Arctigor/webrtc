@@ -4,7 +4,6 @@ function addTab(link) {
 	// If tab already exist in the list, return
 	if ($("#" + $(link).attr("rel")).length != 0)
     return;
-
 	// hide other tabs
     $("#tabs li").removeClass("current");
     $("#content p").hide();
@@ -15,12 +14,15 @@ function addTab(link) {
 		
     $("#content").append("<p id='" + $(link).attr("rel") + "_content'>" +
         $(link).attr("title") + "</p>");
-		
+    
     // set the newly added tab as current
    // $("#" + $(link).attr("rel") + "_content").show();
 	
 	var history = document.getElementById("historyId");
 	$(history).show();
+	var currentId = $(link).attr("rel");	
+	hanldeStartButtonById(currentId);
+//	remoteVideo.src = getRemoteMediaById(currentId);
 	tabs++;
 }
 
@@ -45,6 +47,9 @@ function removeFunction(id){
 		 
 		// show history
 		 $("#dataChannelReceive").text("salut " + currentId);
+		 setPeerId(currentId);
+		 hanldeStartButtonById(currentId);
+//		 remoteVideo.src = getRemoteMediaById(currentId);
 		 
 	 } else{
 		// show history
@@ -52,7 +57,10 @@ function removeFunction(id){
 		 var history = document.getElementById("historyId");
 		 if(tabs == 0){
 			 $(history).hide();
+			 startButton.disabled = true;
 		 }
+		 remoteVideo.src = "";
+		 localVideo.src = "";
 	 }
 }
 
@@ -67,6 +75,14 @@ function displayContent(id){
 	 
 	// // get its link name and show related content
 	 var selectedTabId = $(currentTabSelected).find("a.tab").attr("id");
+	 setPeerId(selectedTabId);
+	 hanldeStartButtonById(selectedTabId);
+	 var remoteMedia = getRemoteMediaById(selectedTabId);
+	 if(remoteMedia != "" && remoteMedia != null){
+		 remoteVideo.src = URL.createObjectURL(remoteMedia);
+	} else {
+		 remoteVideo.src = "";
+	}
 	 
 	 // show history
 	 $("#dataChannelReceive").text(selectedTabId + ": salut");
