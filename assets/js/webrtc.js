@@ -400,6 +400,7 @@ function eventDCOpen() {
 	$.each(friendsList, function(key, value) {
 		if (getPeerId() == value.id) {
 			value.isconnected = true;
+			value.connection = localPeerConnection;
 		}
 	});
 	$(fileTransfer).show();
@@ -411,6 +412,7 @@ function eventDCClosed() {
 	dataChannelSend.focus();
 	dataChannelSend.placeholder = '';
 	$(fileTransfer).hide();
+	remoteVideo.src = "";
 }
 
 function eventDCError(event) {
@@ -508,7 +510,6 @@ function addRowHandlers() {
 						$.each(friendsList, function(key, value) {
 							if (cellValue.includes(value.username)) {
 								selectedFriend = value;
-								setPeerId(selectedFriend.id);
 							}
 						});
 					}
@@ -719,10 +720,14 @@ function setLocalConnectionById(id, localConnection){
 	});
 }
 
-function getLocalConnectionById(id){
+function closeLocalConnectionById(id){
 	$.each(friendsList, function(key, value) {
 		if (value.id == id) {
-			return value.connection;
+			var conn = value.connection;
+			if(conn != null){
+				conn.close();
+			}
+			value.connection = null;
 		}
 	});
 }
@@ -743,6 +748,12 @@ function getRemoteMediaById(id){
 		}
 	});
 	return ret;
+}
+
+function closeMedia(){
+	$.each(friendsList, function(key, value) {
+		value.videosrc = null;
+	});
 }
 
 function encode(username) {

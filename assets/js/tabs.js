@@ -30,7 +30,6 @@ function addTab(link) {
 	var currentId = $(link).attr("rel");
 	setPeerId(currentId);
 	hanldeStartButtonById(currentId);
-	// remoteVideo.src = getRemoteMediaById(currentId);
 	showText();
 	tabs++;
 }
@@ -41,6 +40,7 @@ function removeFunction(id) {
 	// remove tab and related content
 	$("#" + id + "_content").remove();
 	$("#" + id + "_content_remove").remove();
+	closeLocalConnectionById(id);
 
 	// if there is no current tab and if there are still tabs left, show the
 	// last one
@@ -58,7 +58,7 @@ function removeFunction(id) {
 		// show history
 		setPeerId(currentId);
 		hanldeStartButtonById(currentId);
-		// remoteVideo.src = getRemoteMediaById(currentId);
+		showMedia(currentId);
 		showText();
 
 	} else {
@@ -69,6 +69,7 @@ function removeFunction(id) {
 			$(history).hide();
 			startButton.disabled = true;
 		}
+		closeMedia();
 		remoteVideo.src = "";
 		localVideo.src = "";
 	}
@@ -87,13 +88,8 @@ function displayContent(id) {
 	var selectedTabId = $(currentTabSelected).find("a.tab").attr("id");
 	setPeerId(selectedTabId);
 	hanldeStartButtonById(selectedTabId);
+	showMedia(selectedTabId);
 	showText();
-	var remoteMedia = getRemoteMediaById(selectedTabId);
-	if (remoteMedia != "" && remoteMedia != null) {
-		remoteVideo.src = URL.createObjectURL(remoteMedia);
-	} else {
-		remoteVideo.src = "";
-	}
 }
 
 // Change background functionality
@@ -102,6 +98,14 @@ function changeBackground(color) {
 	div.style.backgroundColor = color;
 }
 
+function showMedia(selectedTabId){
+	var remoteMedia = getRemoteMediaById(selectedTabId);
+	if (remoteMedia != "" && remoteMedia != null) {
+		remoteVideo.src = URL.createObjectURL(remoteMedia);
+	} else {
+		remoteVideo.src = "";
+	}
+}
 function showText(){
 	var responseJSON = getHistory();
 	var text = "";
@@ -109,7 +113,6 @@ function showText(){
 	$.each(responseJSON, function(key, value) {
 		text += value.message+"\n";
 	});
-	console.log(text);
 	$("#dataChannelReceive").text(text);
 }
 
