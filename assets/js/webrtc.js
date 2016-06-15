@@ -13,8 +13,8 @@ var acceptButton = document.getElementById('acceptButton');
 var declineButton = document.getElementById('declineButton');
 var dataChannelSend = document.getElementById('dataChannelSend');
 var dataChannelReceive = document.getElementById('dataChannelReceive');
-var localVideo = document.getElementById('localVideo');
-var remoteVideo = document.getElementById('remoteVideo');
+var remoteVideo = document.getElementById('localVideo');
+var localVideo = document.getElementById('remoteVideo');
 var friendsTable = document.getElementById("friendsTable");
 var addFriendButton = document.getElementById("addFriendButton");
 var addFriendTextBox = document.getElementById("addFriendTextBox");
@@ -677,7 +677,6 @@ function getFriendById(id) {
 }
 
 function getFileName() {
-	var myId = getMyId();
 	var peerId = getPeerId();
 	var responseJSON = null;
 	myDataJSON = {

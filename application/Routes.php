@@ -102,6 +102,10 @@ class Routes {
 					'controller' => 'getFileName',
 					'template' => 'getFileName',
 			),
+			'getHistory' => array(
+					'controller' => 'getHistory',
+					'template' => 'getHistory',
+			),
 			'completeConnection' => array(
 					'controller' => 'completeConnection',
 					'template' => 'completeConnection',
