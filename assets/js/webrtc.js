@@ -50,6 +50,10 @@ setInterval(waitingForCandidate, checkDb);
 setInterval(updateFriendsTable, checkDb);
 
 startButton.disabled = true;
+sendButton.disabled = true;
+dataChannelSend.disabled = true;
+dataChannelSend.focus();
+dataChannelSend.placeholder = '';
 
 startButton.onclick = createConnection;
 addFriendButton.onclick = addFriendByUser;
@@ -696,16 +700,28 @@ function getFileName() {
 	return responseJSON.name;
 }
 
-function hanldeStartButtonById(id){
+function handleChatElementsById(id){
 	$.each(friendsList, function(key, value) {
 		if (value.id == id) {
 			if(value.isconnected){
 				startButton.disabled = true;
+				sendButton.disabled = false;
+				dataChannelSend.disabled = false;
+				dataChannelSend.focus();
+				dataChannelSend.placeholder = '';
 			} else{
 				if(value.isonline == 1){
 					startButton.disabled = false;
+					sendButton.disabled = true;
+					dataChannelSend.disabled = true;
+					dataChannelSend.focus();
+					dataChannelSend.placeholder = '';
 				} else{
 					startButton.disabled = true;
+					sendButton.disabled = true;
+					dataChannelSend.disabled = true;
+					dataChannelSend.focus();
+					dataChannelSend.placeholder = '';
 				}
 			}
 		}

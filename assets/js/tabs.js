@@ -24,12 +24,13 @@ function addTab(link) {
 
 	// set the newly added tab as current
 	// $("#" + $(link).attr("rel") + "_content").show();
-
+	
 	var history = document.getElementById("historyId");
 	$(history).show();
 	var currentId = $(link).attr("rel");
+	displayContent(currentId);
 	setPeerId(currentId);
-	hanldeStartButtonById(currentId);
+	handleChatElementsById(currentId);
 	showText();
 	tabs++;
 }
@@ -57,7 +58,7 @@ function removeFunction(id) {
 
 		// show history
 		setPeerId(currentId);
-		hanldeStartButtonById(currentId);
+		handleChatElementsById(currentId);
 		showMedia(currentId);
 		showText();
 
@@ -87,7 +88,7 @@ function displayContent(id) {
 	// // get its link name and show related content
 	var selectedTabId = $(currentTabSelected).find("a.tab").attr("id");
 	setPeerId(selectedTabId);
-	hanldeStartButtonById(selectedTabId);
+	handleChatElementsById(selectedTabId);
 	showMedia(selectedTabId);
 	showText();
 }
@@ -109,11 +110,11 @@ function showMedia(selectedTabId){
 function showText(){
 	var responseJSON = getHistory();
 	var text = "";
-	$("#dataChannelReceive").text(text);
+	document.getElementById("dataChannelReceive").value = text;
 	$.each(responseJSON, function(key, value) {
 		text += value.message+"\n";
 	});
-	$("#dataChannelReceive").text(text);
+	document.getElementById("dataChannelReceive").value = text;
 }
 
 // display History
